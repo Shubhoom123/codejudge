@@ -1,6 +1,6 @@
 # CodeJudge
 
-CodeJudge is an evaluation and fine-tuning harness for LLM-generated code. It sends a task spec to a model, runs whatever code comes back inside a resource-limited sandbox, scores it against a grader, and (optionally) uses the results to build a training set for fine-tuning a smaller model to close the gap.
+CodeJudge is an evaluation and fine-tuning attempt for LLM-generated code. `evaluator.py` reads a task's `problem.md` then prepends a fixed system prompt which tells the model to output only the raw Python, and POSTs that to either `Ollama` or the `OpenAI API`. The model's raw text response gets cleaned up, `code_cleaning.py` strips markdown fences and any trailing self-test junk. That code is then treated as untrusted and it's written to a temp file which runs as a separate subprocess with 5 basic security features (CPU-time cap, a memory cap, a thread/process-count cap, a wall-clock timeout, and a stripped environment with no API keys in it). Basically emulating a sandbox environment.
 
 It started as a way to answer one question: when a small local model (`qwen2:1.5b`) fails at a coding task, is that failure fixable with a modest amount of targeted training data, or does it need a bigger model? The harness exists to answer that question repeatably, instead of by eyeballing a handful of outputs.
 
