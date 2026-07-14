@@ -35,7 +35,19 @@ from pathlib import Path
 
 CPU_TIME_LIMIT_SECONDS = 5
 MEMORY_LIMIT_BYTES = 256 * 1024 * 1024  # 256 MB
-PROCESS_LIMIT = 16
+# RLIMIT_NPROC is a per-real-UID limit on Linux, not a per-subprocess-tree
+# limit: it counts every process/thread already owned by the user running
+# the harness, not just the sandboxed child. That means it needs real
+# headroom above whatever a *legitimate* solution might do, not just a tight
+# cap. race_condition/grader.py's high_contention test spawns 50 real
+# threads on purpose (that's the whole point of the task) — 16 was too low
+# even for a correct solution, and passed locally on macOS only because
+# macOS doesn't enforce RLIMIT_NPROC the way Linux does. It failed loudly
+# in CI (Ubuntu) with "can't start new thread". 256 leaves headroom for
+# that plus whatever else the CI runner's user already owns, while still
+# bounding an actual fork-bomb (thousands of processes) tightly enough to
+# matter.
+PROCESS_LIMIT = 256
 WALL_CLOCK_TIMEOUT_SECONDS = 10
 
 
