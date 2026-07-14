@@ -1,28 +1,29 @@
-import os
 import json
+import os
 import subprocess
 import tempfile
 import time
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 import openai
 import requests
 
-MODELS = {
-    "gpt-4o": "openai",
-    "llama3.1": "ollama",
-    "llama3.2": "ollama",
-    "gemma3:12b": "ollama",
-    "gemma3:4b": "ollama",
-    "mistral": "ollama",
-    "codellama": "ollama",
-}
+import config
+from code_cleaning import clean_llm_code
+from sandbox import run_isolated
+
+# Re-exported for backwards compatibility — other modules previously
+# imported these names directly from evaluator.py.
+MODELS = config.MODELS
+TASKS_DIR = config.TASKS_DIR
+RESULTS_DIR = config.RESULTS_DIR
+TIMEOUT_SECONDS = config.TIMEOUT_SECONDS
 
 
 def get_available_ollama_models() -> list:
     try:
-        response = requests.get("http://localhost:11434/api/tags", timeout=5)
+        response = requests.get(config.OLLAMA_TAGS_URL, timeout=5)
         response.raise_for_status()
         return [m["name"] for m in response.json().get("models", [])]
     except Exception:
@@ -44,23 +45,13 @@ def resolve_model(model_name: str) -> tuple[str, str]:
         f"  Ollama: {ollama_models}"
     )
 
-TASKS_DIR = Path("tasks")
-RESULTS_DIR = Path("results")
-TIMEOUT_SECONDS = 10
-
 
 def call_openai(prompt: str, model: str) -> str:
     client = openai.OpenAI(api_key=os.environ["OPENAI_API_KEY"])
     response = client.chat.completions.create(
         model=model,
         messages=[
-            {
-                "role": "system",
-                "content": (
-                    "You are an expert Python developer. "
-                    "Return ONLY raw Python code with no markdown, no backticks, no explanation."
-                ),
-            },
+            {"role": "system", "content": config.CODE_SYSTEM_PROMPT},
             {"role": "user", "content": prompt},
         ],
         temperature=0,
@@ -70,20 +61,14 @@ def call_openai(prompt: str, model: str) -> str:
 
 def call_ollama(prompt: str, model: str) -> str:
     response = requests.post(
-        "http://localhost:11434/api/generate",
+        config.OLLAMA_GENERATE_URL,
         json={
             "model": model,
-            "prompt": (
-                "You are a Python code generator. "
-                "Output ONLY the raw Python code. "
-                "Do NOT use markdown. Do NOT use ``` or ```python. "
-                "Do NOT explain anything. Just the code, nothing else.\n\n"
-                + prompt
-            ),
+            "prompt": config.CODE_SYSTEM_PROMPT + "\n\n" + prompt,
             "stream": False,
             "options": {
                 "temperature": 0,
-                "stop": ["```"]
+                "stop": ["```"],
             },
         },
     )
@@ -99,14 +84,17 @@ def get_llm_solution(prompt: str, model: str, provider: str) -> str:
     else:
         raise ValueError(f"Unknown provider: {provider}")
 
-    if raw.startswith("```"):
-        raw = raw.split("\n", 1)[1]
-    if raw.endswith("```"):
-        raw = raw.rsplit("```", 1)[0]
-    return raw.strip()
+    return clean_llm_code(raw)
 
 
 def run_solution_against_grader(solution_code: str, grader_path: Path) -> dict:
+    """Run model-generated code against a task's grader, fully isolated.
+
+    Both files are written into a fresh temp directory and the grader is
+    executed as a sandboxed subprocess (see sandbox.py) — resource-limited,
+    minimal environment, hard timeout — since `solution_code` is untrusted
+    LLM output.
+    """
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = Path(tmpdir)
 
@@ -117,13 +105,7 @@ def run_solution_against_grader(solution_code: str, grader_path: Path) -> dict:
         grader_file.write_text(grader_path.read_text())
 
         try:
-            result = subprocess.run(
-                ["python", "grader.py"],
-                cwd=tmpdir,
-                capture_output=True,
-                text=True,
-                timeout=TIMEOUT_SECONDS,
-            )
+            result = run_isolated(["python3", "grader.py"], cwd=tmpdir, timeout=TIMEOUT_SECONDS)
             output = result.stdout.strip()
             stderr = result.stderr.strip()
 
@@ -141,17 +123,10 @@ def run_solution_against_grader(solution_code: str, grader_path: Path) -> dict:
 
 
 def load_task(task_name: str) -> dict:
-    task_dir = TASKS_DIR / task_name
-    problem_file = task_dir / "problem.md"
-    grader_file = task_dir / "grader.py"
-
-    if not problem_file.exists() or not grader_file.exists():
-        raise FileNotFoundError(f"Task '{task_name}' missing problem.md or grader.py")
-
     return {
         "name": task_name,
-        "prompt": problem_file.read_text(),
-        "grader_path": grader_file,
+        "prompt": config.load_task_prompt(task_name),
+        "grader_path": config.load_task_grader(task_name),
     }
 
 
@@ -205,7 +180,7 @@ def main():
             print(e)
             return
 
-    tasks_to_run = [args.task] if args.task else [t.name for t in TASKS_DIR.iterdir() if t.is_dir()]
+    tasks_to_run = [args.task] if args.task else config.list_tasks()
 
     all_results = []
     for task_name in tasks_to_run:

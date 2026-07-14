@@ -2,7 +2,9 @@ import json
 import argparse
 from pathlib import Path
 
-RESULTS_DIR = Path("results")
+import config
+
+RESULTS_DIR = config.RESULTS_DIR
 
 
 def load_latest() -> list:

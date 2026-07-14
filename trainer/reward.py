@@ -1,9 +1,11 @@
+import argparse
 import json
+import sys
 from pathlib import Path
 
+sys.path.append(str(Path(__file__).parent.parent))
+import config
 
-INPUT_FILE = Path("data/training_runs/training_data.json")
-OUTPUT_FILE = Path("data/training_runs/filtered_data.json")
 MIN_SCORE = 0.8
 
 
@@ -18,17 +20,26 @@ def score_to_reward(score: float) -> float:
 
 def build_training_prompt(prompt: str, solution: str) -> dict:
     return {
-        "instruction": (
-            "You are an expert Python developer. "
-            "Return ONLY raw Python code with no markdown, no backticks, no explanation."
-        ),
+        "instruction": config.CODE_SYSTEM_PROMPT,
         "input": prompt.strip(),
         "output": solution.strip(),
     }
 
 
 def main():
-    raw = json.loads(INPUT_FILE.read_text())
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--task", default=config.DEFAULT_TASK)
+    args = parser.parse_args()
+
+    run_dir = config.DATA_DIR / "training_runs" / args.task
+    input_file = run_dir / "training_data.json"
+    output_file = run_dir / "filtered_data.json"
+
+    if not input_file.exists():
+        print(f"No training data at {input_file}. Run trainer/generate_training_data.py --task {args.task} first.")
+        sys.exit(1)
+
+    raw = json.loads(input_file.read_text())
     print(f"Loaded {len(raw)} total examples")
 
     filtered = []
@@ -51,8 +62,8 @@ def main():
         perfect = sum(1 for e in examples if e["score"] == 1.0)
         print(f"  {task}: {len(examples)} examples ({perfect} perfect)")
 
-    OUTPUT_FILE.write_text(json.dumps(filtered, indent=2))
-    print(f"\nSaved to {OUTPUT_FILE}")
+    output_file.write_text(json.dumps(filtered, indent=2))
+    print(f"\nSaved to {output_file}")
 
 
 if __name__ == "__main__":

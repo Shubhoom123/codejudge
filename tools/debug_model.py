@@ -1,95 +1,79 @@
 """Debug script to see exactly what the model outputs and what error occurs."""
-import subprocess
+import argparse
 import sys
-import tempfile
 from pathlib import Path
+
 import requests
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
+sys.path.append(str(Path(__file__).parent.parent))
+import config
+from code_cleaning import clean_llm_code
+from sandbox import run_isolated
 
-SYSTEM_PROMPT = (
-    "You are a Python code generator. "
-    "Output ONLY the raw Python code. "
-    "Do NOT use markdown. Do NOT use backticks. "
-    "Do NOT explain anything. Just the code, nothing else."
-)
 
-TASK_PROMPT = """Write a function `parse_amount(text: str) -> float` that extracts a monetary amount from a user-typed string.
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model", default="qwen2-codejudge")
+    parser.add_argument("--task", default=config.DEFAULT_TASK)
+    parser.add_argument("--input", default="$44.28", help="Sample input to test the entry point with")
+    args = parser.parse_args()
 
-Examples:
-  "$12.50"      -> 12.5
-  "100 dollars" -> 100.0
-  "fifty"       -> 50.0
-  "$1,000"      -> 1000.0
+    prompt = config.load_task_prompt(args.task)
 
-Notes:
-- Handle common formats users actually type.
-- Return a float.
-- If the input cannot be parsed, raise a ValueError."""
+    response = requests.post(
+        config.OLLAMA_GENERATE_URL,
+        json={
+            "model": args.model,
+            "prompt": config.CODE_SYSTEM_PROMPT + "\n\n" + prompt,
+            "stream": False,
+            "options": {"temperature": 0.0},
+        },
+        timeout=300,
+    )
 
-response = requests.post(
-    OLLAMA_URL,
-    json={
-        "model": "qwen2-codejudge",
-        "prompt": SYSTEM_PROMPT + "\n\n" + TASK_PROMPT,
-        "stream": False,
-        "options": {"temperature": 0.0},
-    },
-    timeout=300,
-)
+    raw = response.json()["response"].strip()
+    print("=== RAW OUTPUT ===")
+    print(repr(raw[:500]))
+    print()
+    print("=== VISIBLE OUTPUT ===")
+    print(raw[:500])
+    print()
 
-raw = response.json()["response"].strip()
-print("=== RAW OUTPUT ===")
-print(repr(raw[:500]))
-print()
-print("=== VISIBLE OUTPUT ===")
-print(raw[:500])
-print()
+    # Same cleanup evaluator.py and evaluate_at_scale.py apply: strip
+    # markdown fences, then drop trailing self-test/example code (a
+    # common failure mode — the model appends a self-test with an
+    # undefined name, which crashes on import and masks an otherwise
+    # correct solution as a total failure).
+    raw = clean_llm_code(raw)
 
-# Apply stripping
-if "```" in raw:
-    parts = raw.split("```")
-    if len(parts) >= 3:
-        code = parts[1]
-        if code.startswith("python"):
-            code = code[len("python"):].lstrip("\n")
-        raw = code.strip()
-else:
-    lines = raw.split("\n")
-    code_lines = []
-    in_code = False
-    for line in lines:
-        stripped = line.strip()
-        if stripped.startswith("def ") or stripped.startswith("import ") or stripped.startswith("from ") or stripped.startswith("class "):
-            in_code = True
-        if in_code:
-            code_lines.append(line)
-    if code_lines:
-        raw = "\n".join(code_lines)
+    print("=== AFTER STRIPPING ===")
+    print(repr(raw[:500]))
+    print()
+    print("=== CODE TO RUN ===")
+    print(raw[:500])
+    print()
 
-print("=== AFTER STRIPPING ===")
-print(repr(raw[:500]))
-print()
-print("=== CODE TO RUN ===")
-print(raw[:500])
-print()
-
-# Try to run it
-test_code = raw + """
+    entry_point = config.SCALE_TEST_ENTRY_POINT.get(args.task, "parse_amount")
+    test_code = raw + f"""
 import json
 try:
-    result = parse_amount('$44.28')
-    print(json.dumps({"passed": True, "detail": f"Got {result}"}))
+    result = {entry_point}({args.input!r})
+    print(json.dumps({{"passed": True, "detail": f"Got {{result}}"}}))
 except Exception as e:
-    print(json.dumps({"passed": False, "detail": str(e)}))
+    print(json.dumps({{"passed": False, "detail": str(e)}}))
 """
 
-with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
-    f.write(test_code)
-    tmp = f.name
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir)
+        script = tmp_path / "check.py"
+        script.write_text(test_code)
 
-print("=== RUNNING TEST ===")
-result = subprocess.run([sys.executable, tmp], capture_output=True, text=True, timeout=5)
-print("STDOUT:", result.stdout)
-print("STDERR:", result.stderr[:300])
-Path(tmp).unlink(missing_ok=True)
+        print("=== RUNNING TEST ===")
+        result = run_isolated(["python3", "check.py"], cwd=tmp_path, timeout=5)
+        print("STDOUT:", result.stdout)
+        print("STDERR:", result.stderr[:300])
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,20 @@
+{
+  "total_cases": 4233458,
+  "workers": 4,
+  "target_integers": 2000000,
+  "generation_seconds": 5.11,
+  "cases_per_second": 827894,
+  "by_category": {
+    "written_number": 2000000,
+    "dollar_sign": 285715,
+    "word_dollars": 285715,
+    "plain_number": 285715,
+    "decimal": 117648,
+    "whitespace": 769230,
+    "negative": 307692,
+    "comma_thousands": 181728,
+    "invalid": 9,
+    "zero": 6
+  },
+  "note": "Deduplication is per-worker only, not global: workers operate on disjoint integer ranges, so exact duplicates across workers are possible but rare and not corrected for. Fine for a sampled evaluation corpus; not a guarantee of a perfectly unique set."
+}

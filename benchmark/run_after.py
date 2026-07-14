@@ -4,7 +4,8 @@ import sys
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
-from evaluator import run_solution_against_grader, TASKS_DIR
+import config
+from evaluator import run_solution_against_grader
 
 CHECKPOINT_DIR = Path("data/checkpoints/gemma3-codejudge")
 BASE_MODEL = "google/gemma-3-4b-it"
@@ -12,10 +13,7 @@ OUTPUT_FILE = Path("data/after_results.json")
 
 
 def get_solution(prompt: str) -> str:
-    instruction = (
-        "You are an expert Python developer. "
-        "Return ONLY raw Python code with no markdown, no backticks, no explanation."
-    )
+    instruction = config.CODE_SYSTEM_PROMPT
     full_prompt = (
         f"<instruction>{instruction}</instruction>\n"
         f"<task>{prompt.strip()}</task>\n"
@@ -63,19 +61,17 @@ def get_solution(prompt: str) -> str:
 
 
 def main():
-    tasks = [t.name for t in TASKS_DIR.iterdir() if t.is_dir()]
+    tasks = config.list_tasks()
     results = []
 
     for task_name in tasks:
-        task_dir = TASKS_DIR / task_name
-        problem_file = task_dir / "problem.md"
-        grader_file = task_dir / "grader.py"
-
-        if not problem_file.exists() or not grader_file.exists():
+        try:
+            prompt = config.load_task_prompt(task_name)
+            grader_file = config.load_task_grader(task_name)
+        except FileNotFoundError:
             continue
 
         print(f"\n  Task: {task_name}")
-        prompt = problem_file.read_text()
         solution = get_solution(prompt)
         print(f"  Solution preview: {repr(solution[:120])}")
         scores = run_solution_against_grader(solution, grader_file)

@@ -3,13 +3,14 @@ import sys
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
-from evaluator import evaluate_task, TASKS_DIR
+import config
+from evaluator import evaluate_task
 
 OUTPUT_FILE = Path("data/before_results.json")
 
 
 def main():
-    tasks = [t.name for t in TASKS_DIR.iterdir() if t.is_dir()]
+    tasks = config.list_tasks()
     models = {"gemma3:12b": "ollama"}
 
     results = []

@@ -22,9 +22,10 @@ data/checkpoints/
 *.gguf
 *.ggml
 
-data/training_runs/training_data.json
-data/training_runs/filtered_data.json
-data/training_runs/train.jsonl
+data/training_runs/**/training_data.json
+data/training_runs/**/filtered_data.json
+data/training_runs/**/train.jsonl
+data/training_runs/**/mlx_train.jsonl
 
 results/
 data/*_baseline.json
@@ -33,8 +34,13 @@ data/after_results.json
 data/before_results.json
 
 data/test_cases.json
+data/test_cases_bulk/shard_*.jsonl
+# manifest.json (case counts, throughput, category breakdown) IS tracked —
+# it's small and worth keeping as evidence of what a generation run produced.
 
 .cache/
+.pytest_cache/
+.ruff_cache/
 
 .DS_Store
 .AppleDouble
