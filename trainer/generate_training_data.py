@@ -1,13 +1,21 @@
 """
-Uses a strong teacher model to generate high-quality training data for a
-task, by repeatedly sampling solutions and keeping the ones that score
-well against that task's grader.py.
+Uses a strong teacher model to generate candidate training data for a
+task, by repeatedly sampling solutions and grading every attempt against
+that task's grader.py.
 
 Originally hardcoded to ambigous_spec/parse_amount; now takes --task so
 edge_case_trap and race_condition can go through the same pipeline.
 
-Output: data/training_runs/<task>/training_data.json
-        data/training_runs/<task>/train.jsonl  (Colab/HuggingFace format)
+Output: data/training_runs/<task>/training_data.json  (every attempt, with its score)
+
+This script deliberately does NOT filter or produce train.jsonl itself
+anymore. It used to, with its own separate min-score threshold (0.8) --
+which silently duplicated and disagreed with trainer/reward.py's
+filtering logic. That let solutions which failed an entire grader
+category (e.g. every written-number test) through as "high quality"
+training data, because 0.8 is easy to clear by acing everything else and
+missing one category. Run trainer/reward.py next -- it's the single
+place filtering decisions get made now.
 
 Note on reproducibility: teacher sampling uses temperature=0.8 on purpose
 (diversity of solutions increases the odds of a variety of high-scoring
@@ -30,7 +38,9 @@ import config
 from evaluator import run_solution_against_grader
 
 DEFAULT_ATTEMPTS = 100
-DEFAULT_MIN_SCORE = 0.8
+# Only used for the live "✓/✗ ... so far" progress display below, not for
+# filtering what gets written to disk -- trainer/reward.py owns that now.
+PROGRESS_DISPLAY_THRESHOLD = 1.0
 
 
 def get_solution(teacher_model: str, prompt: str, seed: int | None) -> str:
@@ -57,22 +67,12 @@ def get_solution(teacher_model: str, prompt: str, seed: int | None) -> str:
     return raw.strip()
 
 
-def to_jsonl_format(prompt: str, solution: str) -> dict:
-    """Format for HuggingFace / Colab fine-tuning."""
-    return {
-        "instruction": config.CODE_SYSTEM_PROMPT,
-        "input": prompt.strip(),
-        "output": solution,
-    }
-
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--task", default=config.DEFAULT_TASK,
                         help=f"Task to generate training data for (default: {config.DEFAULT_TASK})")
     parser.add_argument("--teacher-model", default="gemma3:12b")
     parser.add_argument("--attempts", type=int, default=DEFAULT_ATTEMPTS)
-    parser.add_argument("--min-score", type=float, default=DEFAULT_MIN_SCORE)
     parser.add_argument("--seed", type=int, default=None,
                          help="Passed to the Ollama sampler for more reproducible runs")
     args = parser.parse_args()
@@ -90,12 +90,11 @@ def main():
     print(f"Teacher model: {args.teacher_model}")
     print(f"Target task:   {args.task}")
     print(f"Attempts:      {args.attempts}")
-    print(f"Min score:     {args.min_score}")
     print(f"Seed:          {args.seed}")
     print()
 
     all_examples = []
-    high_quality = []
+    perfect_so_far = 0
 
     for i in range(args.attempts):
         try:
@@ -112,40 +111,28 @@ def main():
             }
             all_examples.append(example)
 
-            if score >= args.min_score:
-                high_quality.append(example)
+            if score >= PROGRESS_DISPLAY_THRESHOLD:
+                perfect_so_far += 1
 
-            status = "✓" if score >= args.min_score else "✗"
+            status = "✓" if score >= PROGRESS_DISPLAY_THRESHOLD else "✗"
             print(f"  [{i+1:02d}/{args.attempts}] {status} score={score:.2f}  "
-                  f"({len(high_quality)} high-quality so far)")
+                  f"({perfect_so_far} perfect so far)")
 
         except Exception as e:
             print(f"  [{i+1:02d}/{args.attempts}] ERROR: {e}")
 
         time.sleep(2.5)
 
-    # Save raw data
     raw_path = output_dir / "training_data.json"
     raw_path.write_text(json.dumps(all_examples, indent=2))
 
-    # Save high quality only
-    filtered_path = output_dir / "filtered_data.json"
-    filtered_path.write_text(json.dumps(high_quality, indent=2))
-
-    # Save in JSONL format for Colab / HuggingFace
-    jsonl_path = output_dir / "train.jsonl"
-    with jsonl_path.open("w") as f:
-        for ex in high_quality:
-            f.write(json.dumps(to_jsonl_format(prompt, ex["solution"])) + "\n")
-
     print(f"\n{'='*50}")
-    print(f"Total attempts:        {len(all_examples)}")
-    print(f"High quality (>={args.min_score}):  {len(high_quality)}")
+    print(f"Total attempts:  {len(all_examples)}")
+    print(f"Perfect scores:  {perfect_so_far}")
     print(f"{'='*50}")
-    print("Saved:")
-    print(f"  Raw data    -> {raw_path}")
-    print(f"  Filtered    -> {filtered_path}")
-    print(f"  Colab JSONL -> {jsonl_path}")
+    print(f"Saved: {raw_path}")
+    print(f"\nNext: python trainer/reward.py --task {args.task}")
+    print("(that's the step that filters this and writes train.jsonl)")
 
 
 if __name__ == "__main__":

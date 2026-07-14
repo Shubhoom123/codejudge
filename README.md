@@ -157,11 +157,13 @@ Two separate fine-tuning paths exist, aimed at two different constraints.
 ### Colab / Unsloth (GPU, cloud)
 
 ```bash
-python trainer/generate_training_data.py --task ambigous_spec --teacher-model gemma3:12b --attempts 100 --min-score 0.8
+python trainer/generate_training_data.py --task ambigous_spec --teacher-model gemma3:12b --attempts 100
 python trainer/reward.py --task ambigous_spec
 ```
 
-`generate_training_data.py` samples the teacher model repeatedly at `temperature=0.8` (diversity on purpose: more varied attempts means more good ones to choose from) against a task's grader, and keeps whichever attempts score at or above `--min-score`. `--seed` is passed through to Ollama's `options.seed` where the backend supports it, which makes runs more reproducible, not perfectly reproducible. That's a real constraint of sampling at temperature 0.8 against a quantized local model, not a bug, and it's documented as such in the module docstring rather than implied to be solved. `reward.py` then filters that raw output down to a `filtered_data.json` / `train.jsonl` pair using a simple reward function (`1.0` for a perfect grader score, `0.5` for 0.8 or above, `0.0` otherwise), ready to upload to Colab for LoRA fine-tuning with Unsloth and TRL, then exported to GGUF and loaded into Ollama as a new model tag (`qwen2-codejudge`, for example).
+`generate_training_data.py` samples the teacher model repeatedly at `temperature=0.8` (diversity on purpose: more varied attempts means more good ones to choose from) against a task's grader, and records every attempt's score to `training_data.json`. It doesn't filter anything itself. `--seed` is passed through to Ollama's `options.seed` where the backend supports it, which makes runs more reproducible, not perfectly reproducible. That's a real constraint of sampling at temperature 0.8 against a quantized local model, not a bug, and it's documented as such in the module docstring rather than implied to be solved.
+
+`reward.py` is the one place filtering happens, and by default it's strict: `--min-score` defaults to `1.0`, so only solutions that pass *every* grader test make it into `filtered_data.json` / `train.jsonl`. That default used to be `0.8` (split across two scripts that silently disagreed with each other, no less), which is exactly what produced the written-number gap documented below: a solution that fails an entire test category but nails everything else still clears 0.8, and 77 of the 83 examples that trained the current `qwen2-codejudge` scored between 0.83 and 0.96, not 1.0. `train.jsonl` is ready to upload to Colab for LoRA fine-tuning with Unsloth and TRL, then export to GGUF and load into Ollama as a new model tag (`qwen2-codejudge`, for example).
 
 ### Local / mlx-lm (Apple Silicon, no cloud dependency)
 
@@ -173,21 +175,26 @@ This reuses the same `filtered_data.json` from `reward.py`, reformats it for `ml
 
 ### Where things actually stand
 
-Measured against the 24-case hand-written grader (not the sharded corpus), for the `qwen2-codejudge` model currently loaded in Ollama:
+On the 24-case hand-written grader, the `qwen2-codejudge` model currently loaded in Ollama scores 20/24 (83%): every format passes except written numbers (`"fifty"`, `"one hundred"`, `"one thousand"`, `"one million"` all fail).
+
+That 83% turned out to understate how large the gap actually is. Running the same model against 2,000 cases reservoir-sampled from a 30-million-case corpus (`tools/evaluate_at_scale.py --test-cases data/test_cases_bulk --samples 2000`) gave a very different picture:
 
 ```
-Score: 20/24 (83%)
+Overall: 1037/2000 = 51.8%
 
-Passing: dollar signs, comma-thousands, whitespace (including tabs),
-         negatives, zero, decimals, leading zeroes, all four
-         ValueError cases.
-
-Failing: "fifty", "one hundred", "one thousand", "one million"
-         (the written-number category, specifically compound
-         and multi-word phrases)
+written_number      0/963     0.0%
+whitespace         357/357  100.0%
+dollar_sign        161/161  100.0%
+negative           140/140  100.0%
+plain_number       137/137  100.0%
+word_dollars       127/127  100.0%
+comma_thousands     69/69   100.0%
+decimal             46/46   100.0%
 ```
 
-That's a current result, not a cherry-picked one. The model closed the format-handling gaps from the original `qwen2:1.5b` baseline, which only handled plain numbers, but the written-number path still needs more or better training examples. The `written_number` category in the bulk-generated corpus (2 million cases, all round-trip validated) exists specifically to drive the next training pass on that gap. It hasn't been run yet.
+Every non-written-number category is a clean 100%. `written_number` is a flat 0%, not "mostly fails", all of it. The 24-case grader only has 4 written-number cases out of 24 (about 17%), so it undersold how much of the real input space that category actually represents; at true combinatorial scale it's closer to 47% of the corpus, because every integer contributes exactly one written-number phrase versus format variants that only fire on modulo gates. The model's own generated code confirms this directly: its `parse_amount()` has no written-number parsing branch at all, it just tries `float(text)` and raises `ValueError` on anything that isn't numeric.
+
+The root cause traces back to how the training data for this model was filtered. Of the 83 examples used to fine-tune it, only 6 (7%) had a perfect grader score; the other 77 scored between 0.83 and 0.96, meaning they failed at least one category, and `trainer/reward.py`'s filtering threshold at the time (`score >= 0.8`) let all of them through as "high quality" training data anyway. A solution that aces every format except written numbers lands at exactly 20/24 = 0.833, clears that bar easily, and teaches the model that skipping written numbers is an acceptable pattern. `reward.py` has since been fixed to default to `--min-score 1.0` (perfect solutions only), and a duplicate, disagreeing filter that used to live inside `generate_training_data.py` (also defaulting to 0.8, and the one that actually produced this model's `train.jsonl`) has been removed so there's exactly one filtering decision in the pipeline now, not two silently different ones. A new training run through Colab with the corrected pipeline, followed by re-running this same `evaluate_at_scale.py` check, is the next step to actually close the gap rather than just measure it.
 
 ---
 
@@ -262,7 +269,7 @@ codejudge/
 │
 ├── trainer/
 │   ├── generate_training_data.py   # Teacher sampling + grading (Colab/Unsloth path)
-│   ├── reward.py                   # Score-to-reward filtering
+│   ├── reward.py                   # The single filtering step: raw attempts -> filtered_data.json + train.jsonl
 │   └── finetune.py                 # Local LoRA fine-tuning via mlx-lm (Apple Silicon)
 │
 ├── tools/
@@ -368,7 +375,7 @@ The sandbox doesn't restrict filesystem or network access. It stops runaway CPU,
 
 Test-case deduplication is per worker, not global. Rare exact duplicates across workers are possible in the bulk corpus and aren't corrected for.
 
-The written-number gap in `qwen2-codejudge` is real and currently unresolved. Compound written numbers like `"one hundred"` and `"one million"` still fail. The training data to fix it exists (the `written_number` category of the bulk corpus); the next fine-tuning pass using it hasn't been run.
+The written-number gap in `qwen2-codejudge` is real and, as of this writing, still unresolved: 0% on the `written_number` category at scale (see "Where things actually stand" above). The root cause has been found and fixed in the pipeline (`trainer/reward.py`'s filtering was letting near-miss solutions into the training set), but the model itself hasn't been retrained yet with the corrected pipeline.
 
 The API has no authentication or rate limiting. It's built to run locally next to Ollama. `POST /evaluate` triggers real inference and code execution and shouldn't be exposed publicly as-is.
 
