@@ -1,20 +1,20 @@
 {
-  "total_cases": 4233458,
+  "total_cases": 30000000,
   "workers": 4,
-  "target_integers": 2000000,
-  "generation_seconds": 5.11,
-  "cases_per_second": 827894,
+  "target_integers": 14700000,
+  "generation_seconds": 31.97,
+  "cases_per_second": 973394,
   "by_category": {
-    "written_number": 2000000,
-    "dollar_sign": 285715,
-    "word_dollars": 285715,
-    "plain_number": 285715,
-    "decimal": 117648,
-    "whitespace": 769230,
-    "negative": 307692,
-    "comma_thousands": 181728,
     "invalid": 9,
-    "zero": 6
+    "zero": 6,
+    "written_number": 14172601,
+    "dollar_sign": 2024658,
+    "word_dollars": 2024658,
+    "plain_number": 2024658,
+    "decimal": 833683,
+    "whitespace": 5451000,
+    "negative": 2180399,
+    "comma_thousands": 1288328
   },
-  "note": "Deduplication is per-worker only, not global: workers operate on disjoint integer ranges, so exact duplicates across workers are possible but rare and not corrected for. Fine for a sampled evaluation corpus; not a guarantee of a perfectly unique set."
+  "note": "Trimmed to exactly 30,000,000 cases from a larger generation run (originally 31,116,377) for a fixed, citable corpus size. Trimming takes the first N cases in shard order, so the category mix is whatever that prefix happened to contain, not necessarily identical to the untrimmed corpus's proportions."
 }

@@ -21,6 +21,11 @@ data/checkpoints/
 *.pth
 *.gguf
 *.ggml
+# local Ollama export folders from Colab (GGUF + Modelfile), e.g.
+# qwen_finetuned_gguf/, qwen_finetuned_v3_gguf/ -- these are multi-hundred-MB
+# local artifacts downloaded from Colab, not something a git repo should hold
+qwen_finetuned*/
+qwen_finetuned*_gguf/
 
 data/training_runs/**/training_data.json
 data/training_runs/**/filtered_data.json
