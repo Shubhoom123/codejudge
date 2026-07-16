@@ -60,7 +60,14 @@ PROGRESS_DISPLAY_THRESHOLD = 1.0
 
 
 def get_solution(teacher_model: str, prompt: str, seed: int | None) -> str:
-    options = {"temperature": 0.8, "stop": ["```"]}
+    # See evaluator.py::call_ollama for why stop=["```"] isn't used here
+    # anymore -- it truncates generation the instant the model emits any
+    # triple-backtick, including a leading opening fence, not just a
+    # trailing closing one. That's a plausible explanation for some of the
+    # score=0.00 attempts seen in prior generation runs: not the teacher
+    # writing garbage, but Ollama cutting off an otherwise-good completion
+    # before any real code appeared.
+    options = {"temperature": 0.8}
     if seed is not None:
         options["seed"] = seed
 

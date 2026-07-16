@@ -60,6 +60,20 @@ def call_openai(prompt: str, model: str) -> str:
 
 
 def call_ollama(prompt: str, model: str) -> str:
+    # Regression note: this used to pass stop=["```"], meant to trim a
+    # trailing closing fence. Ollama's stop tokens match anywhere in the
+    # stream, not just at the end -- a model that opens its response with
+    # ```python (as qwen2-codejudge-v3 does) gets cut off after emitting
+    # those first three backticks, before any real code comes out. That
+    # looked like intermittent "Could not import parse_amount" failures
+    # with suspiciously fast (<1s) response times, which read like model
+    # flakiness but was actually this stop token killing the response on
+    # every call where the model happened to open with a fence.
+    # code_cleaning.py already strips fences correctly after the full
+    # response is in hand, via real parsing, so there's no need for a stop
+    # token to do it mid-stream. tools/evaluate_at_scale.py and
+    # tools/debug_model.py never set a stop token here, which is why they
+    # didn't hit this.
     response = requests.post(
         config.OLLAMA_GENERATE_URL,
         json={
@@ -68,7 +82,6 @@ def call_ollama(prompt: str, model: str) -> str:
             "stream": False,
             "options": {
                 "temperature": 0,
-                "stop": ["```"],
             },
         },
     )
