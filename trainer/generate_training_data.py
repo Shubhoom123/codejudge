@@ -17,6 +17,22 @@ training data, because 0.8 is easy to clear by acing everything else and
 missing one category. Run trainer/reward.py next -- it's the single
 place filtering decisions get made now.
 
+Second regression fixed here: the teacher is queried with hint.md (a
+fully-enumerated spec) so it reliably produces correct solutions, but
+that same hint.md text used to also get stored as the training
+example's "prompt" -- meaning the student was fine-tuned to respond to
+hint.md's wording specifically. evaluator.py evaluates the student
+against problem.md (a deliberately shorter, ambiguous spec), a
+different document entirely. A LoRA fine-tune on a few dozen examples
+generalizes narrowly; training the student against one prompt and
+evaluating it against a differently-worded one is enough to make a real
+fine-tune look like it had zero effect, which is exactly what happened
+(a v2 model scored an identical 20/24 to v1, failing the identical four
+written-number tests). Grading doesn't care which prompt text is
+attached to a solution -- run_solution_against_grader() only sees the
+solution code -- so it's safe to query the teacher with hint.md while
+recording the training example against problem.md instead.
+
 Note on reproducibility: teacher sampling uses temperature=0.8 on purpose
 (diversity of solutions increases the odds of a variety of high-scoring
 ones to train on). That makes individual runs non-deterministic. --seed
@@ -82,7 +98,15 @@ def main():
 
     try:
         grader_file = config.load_task_grader(args.task)
-        prompt = config.load_task_hint(args.task)
+        # teacher_prompt: what the teacher is asked to solve (rich, exhaustive --
+        #   maximizes the odds of a fully-correct solution).
+        # student_prompt: what actually gets recorded as the training example's
+        #   input, matching the shorter, ambiguous prompt evaluator.py sends
+        #   the student at evaluation time. These are deliberately different
+        #   documents -- see the module docstring for why conflating them is
+        #   a real bug, not a simplification.
+        teacher_prompt = config.load_task_hint(args.task)
+        student_prompt = config.load_task_prompt(args.task)
     except FileNotFoundError as e:
         print(e)
         sys.exit(1)
@@ -98,13 +122,13 @@ def main():
 
     for i in range(args.attempts):
         try:
-            solution = get_solution(args.teacher_model, prompt, args.seed)
+            solution = get_solution(args.teacher_model, teacher_prompt, args.seed)
             scores = run_solution_against_grader(solution, grader_file)
             score = scores.get("score", 0)
 
             example = {
                 "task": args.task,
-                "prompt": prompt.strip(),
+                "prompt": student_prompt.strip(),
                 "solution": solution,
                 "scores": scores,
                 "score": score,
