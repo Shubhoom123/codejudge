@@ -7,6 +7,11 @@ Originally hardcoded to ambigous_spec/parse_amount; now takes --task so
 edge_case_trap and race_condition can go through the same pipeline.
 
 Output: data/training_runs/<task>/training_data.json  (every attempt, with its score)
+This file is checkpointed to disk every --checkpoint-every attempts (default
+25), not just once at the end -- a long run on a remote/cloud GPU can take
+hours, and a session that dies mid-run (killed process, crashed kernel, a
+cloud notebook getting recycled) would otherwise lose every attempt made so
+far, not just the in-flight one.
 
 This script deliberately does NOT filter or produce train.jsonl itself
 anymore. It used to, with its own separate min-score threshold (0.8) --
@@ -98,6 +103,24 @@ def main():
     parser.add_argument("--attempts", type=int, default=DEFAULT_ATTEMPTS)
     parser.add_argument("--seed", type=int, default=None,
                          help="Passed to the Ollama sampler for more reproducible runs")
+    parser.add_argument("--sleep-seconds", type=float, default=0.5,
+                         help="Pause between attempts (default: 0.5s). This loop is "
+                              "sequential and blocking -- Ollama already only serves "
+                              "one request at a time locally, so this isn't rate-limiting "
+                              "anything. It only exists as a cheap guard against a laptop's "
+                              "fans/thermals maxing out over hundreds of back-to-back "
+                              "generations. Set to 0 to remove it entirely; raise it if you "
+                              "notice throttling (generation calls getting slower over a "
+                              "long run) on a long --attempts run.")
+    parser.add_argument("--checkpoint-every", type=int, default=25,
+                         help="Write training_data.json to disk every N attempts "
+                              "(default: 25), not just once at the end. A long run "
+                              "(hundreds of attempts against a local or remote GPU) can "
+                              "take hours; writing only at the very end means a killed "
+                              "process, a crashed kernel, or -- concretely -- a cloud "
+                              "notebook session getting recycled mid-run loses every "
+                              "attempt made so far, not just the in-flight one. Set to 0 "
+                              "to disable and only write once at the end.")
     args = parser.parse_args()
 
     output_dir = config.DATA_DIR / "training_runs" / args.task
@@ -124,6 +147,7 @@ def main():
     print(f"Seed:          {args.seed}")
     print()
 
+    raw_path = output_dir / "training_data.json"
     all_examples = []
     perfect_so_far = 0
 
@@ -152,9 +176,18 @@ def main():
         except Exception as e:
             print(f"  [{i+1:02d}/{args.attempts}] ERROR: {e}")
 
-        time.sleep(2.5)
+        if args.sleep_seconds > 0:
+            time.sleep(args.sleep_seconds)
 
-    raw_path = output_dir / "training_data.json"
+        # Checkpoint to disk periodically, not just once at the end -- see
+        # --checkpoint-every's help text for why. Written on the *last*
+        # attempt too regardless of the interval, so the final save below
+        # is technically redundant but kept as a clear, unconditional
+        # "this run is done and complete" write.
+        is_last = (i + 1) == args.attempts
+        if args.checkpoint_every > 0 and ((i + 1) % args.checkpoint_every == 0 or is_last):
+            raw_path.write_text(json.dumps(all_examples, indent=2))
+
     raw_path.write_text(json.dumps(all_examples, indent=2))
 
     print(f"\n{'='*50}")
