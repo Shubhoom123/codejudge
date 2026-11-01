@@ -1,0 +1,32 @@
+{
+  "method": "stratified: floor per category, remainder proportional to corpus size; uniform draw without replacement within category, one RNG per category",
+  "size": 2000,
+  "floor": 100,
+  "seed": 42,
+  "allocation": {
+    "comma_thousands": 151,
+    "decimal": 133,
+    "dollar_sign": 180,
+    "invalid": 9,
+    "negative": 186,
+    "plain_number": 180,
+    "whitespace": 315,
+    "word_dollars": 180,
+    "written_number": 660,
+    "zero": 6
+  },
+  "corpus_counts": {
+    "invalid": 9,
+    "zero": 6,
+    "written_number": 14172601,
+    "dollar_sign": 2024658,
+    "word_dollars": 2024658,
+    "plain_number": 2024658,
+    "decimal": 833683,
+    "whitespace": 5451000,
+    "negative": 2180399,
+    "comma_thousands": 1288328
+  },
+  "corpus_total": 30000000,
+  "cases_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a"
+}

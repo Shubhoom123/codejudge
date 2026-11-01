@@ -1,0 +1,169 @@
+{
+  "schema": 1,
+  "kind": "baseline",
+  "arm": "baseline",
+  "run_id": "baseline_qwen2-codejudge-v2:latest",
+  "n_examples": null,
+  "seed": null,
+  "model_tag": "qwen2-codejudge-v2:latest",
+  "source_run_file": "results/run_20260715_132945.json",
+  "source_run_sha256": "b0c9f159df277b1a5d1b4be98efb1befcc2490785cd4a3c713c587bcd01f7b21",
+  "solution_sha256": "11cf01a0d9330c614f211f7344e7077fa2e550f718575ee2658a2c657466eb13",
+  "eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+  "code_commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+  "dirty": true,
+  "date": "2026-11-01",
+  "python": "3.12.16",
+  "platform": "Linux-6.8.0-138-generic-aarch64-with-glibc2.35",
+  "metrics": {
+    "eval": {
+      "per_category": {
+        "comma_thousands": {
+          "passed": 151,
+          "total": 151,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "decimal": {
+          "passed": 133,
+          "total": 133,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "dollar_sign": {
+          "passed": 180,
+          "total": 180,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "invalid": {
+          "passed": 9,
+          "total": 9,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "negative": {
+          "passed": 186,
+          "total": 186,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "plain_number": {
+          "passed": 180,
+          "total": 180,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "whitespace": {
+          "passed": 315,
+          "total": 315,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "word_dollars": {
+          "passed": 180,
+          "total": 180,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "written_number": {
+          "passed": 0,
+          "total": 660,
+          "accuracy": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "zero": {
+          "passed": 5,
+          "total": 6,
+          "accuracy": 0.8333,
+          "ci95": [
+            0.5,
+            1.0
+          ]
+        }
+      },
+      "weighted": {
+        "accuracy": 0.5276,
+        "ci95": [
+          0.5276,
+          0.5276
+        ],
+        "weights": {
+          "comma_thousands": 0.042944,
+          "decimal": 0.027789,
+          "dollar_sign": 0.067489,
+          "invalid": 0.0,
+          "negative": 0.07268,
+          "plain_number": 0.067489,
+          "whitespace": 0.1817,
+          "word_dollars": 0.067489,
+          "written_number": 0.47242,
+          "zero": 0.0
+        }
+      },
+      "unweighted": {
+        "passed": 1339,
+        "total": 2000,
+        "accuracy": 0.6695
+      },
+      "bootstrap": {
+        "resamples": 2000,
+        "seed": 0,
+        "unit": "test cases within category"
+      }
+    },
+    "hand_grader": {
+      "passed": 20,
+      "total": 24,
+      "failed_tests": [
+        "written_number_single",
+        "compound_written_number",
+        "written_thousand",
+        "large_written_million"
+      ]
+    }
+  },
+  "diagnostics": {
+    "generation": {
+      "n_chars_raw": 689,
+      "n_chars_cleaned": 689,
+      "has_markdown_fence": false,
+      "cleaning_changed_code": false,
+      "parses": true,
+      "defines_parse_amount": true,
+      "mentions_written_number_words": false,
+      "n_new_tokens": null,
+      "max_new_tokens": null,
+      "hit_max_new_tokens": null,
+      "finish_reason": null
+    }
+  },
+  "solution": "import re\n\ndef parse_amount(text: str) -> float:\n    text = text.strip()\n    if text.lower().endswith('dollars'):\n        text = text[:-7]\n    elif text.lower().endswith('dollar'):\n        text = text[:-6]\n    try:\n        amount_str = text.replace('$', '').replace(',', '')\n        return float(amount_str)\n    except ValueError:\n        raise ValueError(f'Could not parse amount: {text}')\n\ndef check_parse_amount():\n    assert parse_amount('$12.50') == 12.5, 'Test 1 failed'\n    assert parse_amount('100 dollars') == 100.0, 'Test 2 failed'\n    assert parse_amount(fifty) == 50.0, 'Test 3 failed'\n    assert parse_amount('$1,000') == 1000.0, 'Test 4 failed'\n    print('All tests passed!')"
+}

@@ -1,0 +1,731 @@
+{
+  "schema_version": 1,
+  "generated_by": "tools/build_ledger.py",
+  "generated_at": "2026-11-01T07:24:43Z",
+  "git": {
+    "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+    "dirty": true,
+    "branch": "main"
+  },
+  "environment": {
+    "python": "3.12.16",
+    "platform": "Linux-6.8.0-138-generic-aarch64-with-glibc2.35",
+    "machine": "aarch64"
+  },
+  "entries": {
+    "corpus.total_cases": {
+      "value": 30000000,
+      "kind": "measured",
+      "source": "data/test_cases_bulk/manifest.json",
+      "command": "python tools/build_ledger.py   # streams every shard",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null,
+      "verified_against_manifest": true,
+      "manifest_total": 30000000,
+      "mismatches": {},
+      "shard_files": 300
+    },
+    "corpus.by_category": {
+      "value": {
+        "invalid": 9,
+        "zero": 6,
+        "written_number": 14172601,
+        "dollar_sign": 2024658,
+        "word_dollars": 2024658,
+        "plain_number": 2024658,
+        "decimal": 833683,
+        "whitespace": 5451000,
+        "negative": 2180399,
+        "comma_thousands": 1288328
+      },
+      "kind": "measured",
+      "source": "data/test_cases_bulk/manifest.json",
+      "command": "python tools/build_ledger.py   # streams every shard",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null
+    },
+    "corpus.written_number_pct": {
+      "value": 0.4724200333333333,
+      "kind": "measured",
+      "source": "data/test_cases_bulk/manifest.json",
+      "command": "python tools/build_ledger.py   # streams every shard",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null,
+      "notes": "written_number cases / total cases (fraction, not percent)."
+    },
+    "corpus.manifest_note": {
+      "value": "Trimmed to exactly 30,000,000 cases from a larger generation run (originally 31,116,377) for a fixed, citable corpus size. Trimming takes the first N cases in shard order, so the category mix is whatever that prefix happened to contain, not necessarily identical to the untrimmed corpus's proportions.",
+      "kind": "recorded",
+      "source": "data/test_cases_bulk/manifest.json",
+      "command": "cat data/test_cases_bulk/manifest.json",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null
+    },
+    "bulk_eval.primary": {
+      "value": {
+        "passed": 1037,
+        "total": 2000,
+        "accuracy": 0.5185,
+        "by_category": {
+          "comma_thousands": {
+            "passed": 69,
+            "total": 69,
+            "accuracy": 1.0
+          },
+          "decimal": {
+            "passed": 46,
+            "total": 46,
+            "accuracy": 1.0
+          },
+          "dollar_sign": {
+            "passed": 161,
+            "total": 161,
+            "accuracy": 1.0
+          },
+          "negative": {
+            "passed": 140,
+            "total": 140,
+            "accuracy": 1.0
+          },
+          "plain_number": {
+            "passed": 137,
+            "total": 137,
+            "accuracy": 1.0
+          },
+          "whitespace": {
+            "passed": 357,
+            "total": 357,
+            "accuracy": 1.0
+          },
+          "word_dollars": {
+            "passed": 127,
+            "total": 127,
+            "accuracy": 1.0
+          },
+          "written_number": {
+            "passed": 0,
+            "total": 963,
+            "accuracy": 0.0
+          }
+        },
+        "stored_summary_consistent": true
+      },
+      "kind": "measured",
+      "source": "data/qwen2_codejudge_bulk_eval.json",
+      "command": "python tools/evaluate_at_scale.py --model qwen2-codejudge --task ambigous_spec --samples 2000 --seed 42 --output data/qwen2_codejudge_bulk_eval.json",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": 42,
+      "model_tag": "qwen2-codejudge",
+      "notes": "Recomputed from the per-case `results` list, not from the file's summary fields. Sampling is a uniform reservoir sample (Algorithm R), NOT stratified. This is the only 2000-case bulk eval in the repo; none exists for v2 or v3.",
+      "artifact_sha256": "4fbf6a117603e5f48d9caa2aefdc44f6e127ab2d0a81ba01cea969b260c7d243"
+    },
+    "bulk_eval.primary.sample_matches_corpus": {
+      "value": true,
+      "kind": "measured",
+      "source": "test_case_store.reservoir_sample",
+      "command": "python -c \"from test_case_store import reservoir_sample as r; r('data/test_cases_bulk', k=2000, seed=42)\"",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": 42,
+      "model_tag": null,
+      "notes": "True = re-drawing the seeded sample from the current shards reproduces the eval file's inputs exactly (same order). null = shards unavailable, not checked."
+    },
+    "grader.ambigous_spec.qwen2-codejudge-v2:latest": {
+      "value": {
+        "passed": 20,
+        "total": 24,
+        "failed_tests": [
+          "written_number_single",
+          "compound_written_number",
+          "written_thousand",
+          "large_written_million"
+        ]
+      },
+      "kind": "recorded",
+      "source": "results/run_20260715_132945.json",
+      "command": "python evaluator.py --model qwen2-codejudge-v2:latest --task ambigous_spec",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": "qwen2-codejudge-v2:latest",
+      "notes": "results/ is gitignored; re-running needs Ollama and the fine-tuned model, which are not in the repo.",
+      "artifact_sha256": "b0c9f159df277b1a5d1b4be98efb1befcc2490785cd4a3c713c587bcd01f7b21"
+    },
+    "grader.ambigous_spec.qwen2-codejudge-v3:latest": {
+      "value": {
+        "passed": 20,
+        "total": 24,
+        "failed_tests": [
+          "written_number_single",
+          "compound_written_number",
+          "written_thousand",
+          "large_written_million"
+        ]
+      },
+      "kind": "recorded",
+      "source": "results/run_20260716_132610.json",
+      "command": "python evaluator.py --model qwen2-codejudge-v3:latest --task ambigous_spec",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": "qwen2-codejudge-v3:latest",
+      "notes": "results/ is gitignored; re-running needs Ollama and the fine-tuned model, which are not in the repo.",
+      "artifact_sha256": "8c708e8b961514c5dab14265ced0ef727514fb5e789b094a5e17dab9dd5a78ea"
+    },
+    "grader.ambigous_spec.qwen2-codejudge:latest": {
+      "value": {
+        "passed": 20,
+        "total": 24,
+        "failed_tests": [
+          "written_number_single",
+          "compound_written_number",
+          "written_thousand",
+          "large_written_million"
+        ]
+      },
+      "kind": "recorded",
+      "source": "results/run_20260713_171606.json",
+      "command": "python evaluator.py --model qwen2-codejudge:latest --task ambigous_spec",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": "qwen2-codejudge:latest",
+      "notes": "results/ is gitignored; re-running needs Ollama and the fine-tuned model, which are not in the repo.",
+      "artifact_sha256": "755ac9e8ddff5b29e15ca1206666289054f304388237370aecdac9369c217533"
+    },
+    "training.attempts": {
+      "value": 1000,
+      "kind": "measured",
+      "source": "data/training_runs/ambigous_spec/training_data.json",
+      "command": "python -c 'import json; json.load(open(\"data/training_runs/ambigous_spec/training_data.json\"))'  # see tools/build_ledger.py::measure_training",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null,
+      "notes": "The file records no teacher model tag, seed or temperature, so this run cannot be reproduced from the repo.",
+      "artifact_sha256": "5ca12d375e4623e4c05864ef550b9e21b35840e23d7fd43b8d148fa7dc504cf5"
+    },
+    "training.attempts_graded": {
+      "value": 991,
+      "kind": "measured",
+      "source": "data/training_runs/ambigous_spec/training_data.json",
+      "command": "python -c 'import json; json.load(open(\"data/training_runs/ambigous_spec/training_data.json\"))'  # see tools/build_ledger.py::measure_training",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null,
+      "notes": "Attempts whose grader output contains per-test results; the rest errored."
+    },
+    "training.perfect": {
+      "value": 117,
+      "kind": "measured",
+      "source": "data/training_runs/ambigous_spec/training_data.json",
+      "command": "python -c 'import json; json.load(open(\"data/training_runs/ambigous_spec/training_data.json\"))'  # see tools/build_ledger.py::measure_training",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null
+    },
+    "training.perfect_pct": {
+      "value": 0.117,
+      "kind": "measured",
+      "source": "data/training_runs/ambigous_spec/training_data.json",
+      "command": "python -c 'import json; json.load(open(\"data/training_runs/ambigous_spec/training_data.json\"))'  # see tools/build_ledger.py::measure_training",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null,
+      "notes": "perfect attempts / all attempts (fraction)."
+    },
+    "training.perfect_unique_solutions": {
+      "value": 117,
+      "kind": "measured",
+      "source": "data/training_runs/ambigous_spec/training_data.json",
+      "command": "python -c 'import json; json.load(open(\"data/training_runs/ambigous_spec/training_data.json\"))'  # see tools/build_ledger.py::measure_training",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null
+    },
+    "training.score_histogram": {
+      "value": {
+        "1.0": 117,
+        "0.96": 42,
+        "0.92": 85,
+        "0.88": 337,
+        "0.83": 110,
+        "0.79": 137,
+        "0.75": 97,
+        "0.71": 11,
+        "0.67": 31,
+        "0.62": 5,
+        "0.58": 2,
+        "0.54": 1,
+        "0.42": 3,
+        "0.33": 1,
+        "0.29": 9,
+        "0.25": 1,
+        "0.21": 1,
+        "0.12": 1,
+        "0": 9
+      },
+      "kind": "measured",
+      "source": "data/training_runs/ambigous_spec/training_data.json",
+      "command": "python -c 'import json; json.load(open(\"data/training_runs/ambigous_spec/training_data.json\"))'  # see tools/build_ledger.py::measure_training",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null
+    },
+    "training.test_fail_rates": {
+      "value": {
+        "dollar_sign": {
+          "failed": 40,
+          "total": 991,
+          "rate": 0.040363
+        },
+        "word_dollars": {
+          "failed": 52,
+          "total": 991,
+          "rate": 0.052472
+        },
+        "written_number_single": {
+          "failed": 126,
+          "total": 991,
+          "rate": 0.127144
+        },
+        "comma_thousands": {
+          "failed": 17,
+          "total": 991,
+          "rate": 0.017154
+        },
+        "negative_amount": {
+          "failed": 275,
+          "total": 991,
+          "rate": 0.277497
+        },
+        "zero": {
+          "failed": 15,
+          "total": 991,
+          "rate": 0.015136
+        },
+        "extra_whitespace": {
+          "failed": 16,
+          "total": 991,
+          "rate": 0.016145
+        },
+        "invalid_raises_valueerror": {
+          "failed": 228,
+          "total": 991,
+          "rate": 0.230071
+        },
+        "empty_string_raises": {
+          "failed": 27,
+          "total": 991,
+          "rate": 0.027245
+        },
+        "compound_written_number": {
+          "failed": 606,
+          "total": 991,
+          "rate": 0.611504
+        },
+        "decimal_cents": {
+          "failed": 40,
+          "total": 991,
+          "rate": 0.040363
+        },
+        "written_thousand": {
+          "failed": 588,
+          "total": 991,
+          "rate": 0.59334
+        },
+        "gibberish_raises": {
+          "failed": 224,
+          "total": 991,
+          "rate": 0.226034
+        },
+        "large_number": {
+          "failed": 40,
+          "total": 991,
+          "rate": 0.040363
+        },
+        "large_written_million": {
+          "failed": 593,
+          "total": 991,
+          "rate": 0.598385
+        },
+        "leading_zeroes": {
+          "failed": 16,
+          "total": 991,
+          "rate": 0.016145
+        },
+        "decimal_only": {
+          "failed": 63,
+          "total": 991,
+          "rate": 0.063572
+        },
+        "whitespace_before": {
+          "failed": 16,
+          "total": 991,
+          "rate": 0.016145
+        },
+        "whitespace_after": {
+          "failed": 16,
+          "total": 991,
+          "rate": 0.016145
+        },
+        "negative_plain": {
+          "failed": 272,
+          "total": 991,
+          "rate": 0.27447
+        },
+        "singular_dollar": {
+          "failed": 52,
+          "total": 991,
+          "rate": 0.052472
+        },
+        "tab_whitespace": {
+          "failed": 16,
+          "total": 991,
+          "rate": 0.016145
+        },
+        "comma_decimal": {
+          "failed": 40,
+          "total": 991,
+          "rate": 0.040363
+        },
+        "number_with_letters_raises": {
+          "failed": 222,
+          "total": 991,
+          "rate": 0.224016
+        }
+      },
+      "kind": "measured",
+      "source": "data/training_runs/ambigous_spec/training_data.json",
+      "command": "python -c 'import json; json.load(open(\"data/training_runs/ambigous_spec/training_data.json\"))'  # see tools/build_ledger.py::measure_training",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null,
+      "notes": "Per grader test, over graded attempts."
+    },
+    "eval_set.strat2000": {
+      "value": {
+        "size": 2000,
+        "floor": 100,
+        "allocation": {
+          "comma_thousands": 151,
+          "decimal": 133,
+          "dollar_sign": 180,
+          "invalid": 9,
+          "negative": 186,
+          "plain_number": 180,
+          "whitespace": 315,
+          "word_dollars": 180,
+          "written_number": 660,
+          "zero": 6
+        },
+        "cases_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+        "reproduces_from_corpus": true
+      },
+      "kind": "measured",
+      "source": "data/eval_sets/ambigous_spec_strat2000_seed42.jsonl",
+      "command": "python tools/make_eval_set.py --size 2000 --floor 100 --seed 42",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": 42,
+      "model_tag": null,
+      "notes": "Stratified: floor per category, remainder proportional to corpus size. true = re-drawing from the current shards gives byte-identical cases; null = shards unavailable, not checked.",
+      "artifact_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a"
+    },
+    "exp.baseline_qwen2-codejudge-v2:latest": {
+      "value": {
+        "weighted_accuracy": 0.5276,
+        "weighted_ci95": [
+          0.5276,
+          0.5276
+        ],
+        "written_number_accuracy": 0.0,
+        "hand_grader_passed": 20,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/baselines/qwen2-codejudge-v2_latest.json",
+      "command": "python tools/score_saved_solutions.py",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": "qwen2-codejudge-v2:latest",
+      "notes": "Saved solution text from a gitignored results/ file, re-scored on the frozen eval set.",
+      "artifact_sha256": "888b626ff230cc2eeb8b808421ed6f01f2f891f2efe70283b926cdcaeb9c769c",
+      "run_code_commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "run_dirty": true,
+      "run_date": "2026-11-01",
+      "run_data_sha256": null,
+      "run_config_sha256": null,
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": null,
+      "run_solution_sha256": "11cf01a0d9330c614f211f7344e7077fa2e550f718575ee2658a2c657466eb13"
+    },
+    "exp.baseline_qwen2-codejudge-v3:latest": {
+      "value": {
+        "weighted_accuracy": 0.5276,
+        "weighted_ci95": [
+          0.5276,
+          0.5276
+        ],
+        "written_number_accuracy": 0.0,
+        "hand_grader_passed": 20,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/baselines/qwen2-codejudge-v3_latest.json",
+      "command": "python tools/score_saved_solutions.py",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": "qwen2-codejudge-v3:latest",
+      "notes": "Saved solution text from a gitignored results/ file, re-scored on the frozen eval set.",
+      "artifact_sha256": "4309a0bdee804fb009e8dfd24889c5e959208e8c5fb1233337b52ce34b2a17de",
+      "run_code_commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "run_dirty": true,
+      "run_date": "2026-11-01",
+      "run_data_sha256": null,
+      "run_config_sha256": null,
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": null,
+      "run_solution_sha256": "99455f14e95c6e98e3981eb6984c50201ddd19e4b6efbfc6a3d05486c6582f7f"
+    },
+    "exp.baseline_qwen2-codejudge:latest": {
+      "value": {
+        "weighted_accuracy": 0.5276,
+        "weighted_ci95": [
+          0.5276,
+          0.5276
+        ],
+        "written_number_accuracy": 0.0,
+        "hand_grader_passed": 20,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/baselines/qwen2-codejudge_latest.json",
+      "command": "python tools/score_saved_solutions.py",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": "qwen2-codejudge:latest",
+      "notes": "Saved solution text from a gitignored results/ file, re-scored on the frozen eval set.",
+      "artifact_sha256": "80769c10e96e1306b36fcff687cc7af3ba254df0f4a210e646ced68a9077c92c",
+      "run_code_commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "run_dirty": true,
+      "run_date": "2026-11-01",
+      "run_data_sha256": null,
+      "run_config_sha256": null,
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": null,
+      "run_solution_sha256": "11cf01a0d9330c614f211f7344e7077fa2e550f718575ee2658a2c657466eb13"
+    },
+    "phase1.ablation": {
+      "value": {},
+      "kind": "measured",
+      "source": "experiments/**/*.json",
+      "command": "python tools/build_ledger.py   # evaluation.aggregate_runs over the run summaries",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null,
+      "notes": "Mean and std across seeds of corpus-weighted accuracy; per-category mean and min-max. Bootstrap CIs resample test cases only (see evaluation.py docstring)."
+    },
+    "phase1.runs_recorded": {
+      "value": 0,
+      "kind": "measured",
+      "source": "experiments/**/*.json",
+      "command": "python tools/build_ledger.py",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null
+    },
+    "unverified.resume_bulk_72_8": {
+      "value": null,
+      "kind": "unverified",
+      "source": "resume (not in repo)",
+      "command": "python tools/build_ledger.py   # search_for_figure('72\\\\.8\\\\s*%|(?<![\\\\d.])0?\\\\.728(?!\\\\d)')",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null,
+      "notes": "Claim: 'v1/v3 scored 72.8% at scale'. No artifact in the repo contains this figure, and the only 2000-case bulk eval (seed 42) is v1 at 51.8%. No bulk eval exists for v2 or v3.",
+      "search": {
+        "files_scanned": 44,
+        "file_hits": [],
+        "git_commit_hits": []
+      }
+    },
+    "unverified.v1_v3_training_set_composition": {
+      "value": null,
+      "kind": "unverified",
+      "source": "README.md (Fine-tuning > Where things actually stand)",
+      "command": "n/a - the training files for v1-v3 are not in the repo",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null,
+      "notes": "README says v1 trained on 83 examples (77 near-misses scoring 0.83-0.96, 6 perfect), v2 on 33 and v3 on 20 perfect examples. Those datasets and the Colab notebook are not in the repo, so these counts cannot be re-derived. The grader scores they produced (20/24 each) are recorded under grader.*."
+    },
+    "unverified.perfect_hit_rate_5_12pct": {
+      "value": null,
+      "kind": "unverified",
+      "source": "README.md (Known limitations)",
+      "command": "n/a - only one teacher run (training.*) is retained",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null,
+      "notes": "README cites a '~5-12%' perfect-score hit rate across runs. Only the 1000-attempt run is retained (training.perfect_pct)."
+    },
+    "tests.collected": {
+      "value": 98,
+      "kind": "measured",
+      "source": "pytest --collect-only",
+      "command": "python -m pytest -o addopts= -q --collect-only",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null,
+      "notes": "Parametrized cases are counted individually."
+    },
+    "tests.files": {
+      "value": 12,
+      "kind": "measured",
+      "source": "pytest --collect-only",
+      "command": "python -m pytest -o addopts= -q --collect-only",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null
+    },
+    "tests.per_file": {
+      "value": {
+        "test_api.py": 13,
+        "test_code_cleaning.py": 9,
+        "test_eval_set.py": 8,
+        "test_evaluation.py": 9,
+        "test_evaluator.py": 7,
+        "test_generate_test_cases_bulk.py": 6,
+        "test_graders.py": 4,
+        "test_ledger.py": 9,
+        "test_reward.py": 6,
+        "test_sandbox.py": 5,
+        "test_sft_train.py": 12,
+        "test_shard_store.py": 10
+      },
+      "kind": "measured",
+      "source": "pytest --collect-only",
+      "command": "python -m pytest -o addopts= -q --collect-only",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null
+    },
+    "tests.def_test_functions": {
+      "value": 92,
+      "kind": "measured",
+      "source": "tests/test_*.py (regex)",
+      "command": "grep -c 'def test_' tests/*.py",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null,
+      "notes": "Undercounts: parametrized tests expand into several cases.",
+      "per_file": {
+        "test_api.py": 9,
+        "test_code_cleaning.py": 9,
+        "test_eval_set.py": 8,
+        "test_evaluation.py": 9,
+        "test_evaluator.py": 7,
+        "test_generate_test_cases_bulk.py": 6,
+        "test_graders.py": 2,
+        "test_ledger.py": 9,
+        "test_reward.py": 6,
+        "test_sandbox.py": 5,
+        "test_sft_train.py": 12,
+        "test_shard_store.py": 10
+      }
+    },
+    "tests.passed": {
+      "value": 98,
+      "kind": "measured",
+      "source": "pytest --junitxml",
+      "command": "python -m pytest -o addopts= -q",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null,
+      "notes": "Platform-dependent: the RLIMIT_AS memory test is skipped on macOS, so a Mac run is 59 passed + 1 skipped. See environment in this ledger for where this was measured."
+    },
+    "tests.failed": {
+      "value": 0,
+      "kind": "measured",
+      "source": "pytest --junitxml",
+      "command": "python -m pytest -o addopts= -q",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null,
+      "notes": "Platform-dependent: the RLIMIT_AS memory test is skipped on macOS, so a Mac run is 59 passed + 1 skipped. See environment in this ledger for where this was measured."
+    },
+    "tests.skipped": {
+      "value": 0,
+      "kind": "measured",
+      "source": "pytest --junitxml",
+      "command": "python -m pytest -o addopts= -q",
+      "commit": "e3e15d2c07405bc88bfd507cc6352d378d1ba2b6",
+      "dirty": true,
+      "date": "2026-11-01",
+      "seed": null,
+      "model_tag": null,
+      "notes": "Platform-dependent: the RLIMIT_AS memory test is skipped on macOS, so a Mac run is 59 passed + 1 skipped. See environment in this ledger for where this was measured."
+    }
+  }
+}

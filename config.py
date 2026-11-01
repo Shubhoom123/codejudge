@@ -91,3 +91,24 @@ def list_tasks() -> list[str]:
     if not TASKS_DIR.exists():
         return []
     return sorted(t.name for t in TASKS_DIR.iterdir() if t.is_dir())
+
+
+def build_eval_prompt(task_name: str) -> str:
+    """The exact user-turn text every evaluator sends: system prompt + task spec.
+
+    Training must use this same function. Bug #2 in the README (training on
+    hint.md, evaluating on problem.md) was two code paths building 'the
+    prompt' separately; trainer/sft_train.py and every eval go through here.
+    """
+    return CODE_SYSTEM_PROMPT + "\n\n" + load_task_prompt(task_name)
+
+
+def format_chatml(user_text: str) -> str:
+    """Qwen2 ChatML with no system turn, ending at the assistant's opening.
+
+    This is what Ollama renders for a /api/generate call against
+    qwen2-1.5b-instruct (see the TEMPLATE in qwen_finetuned_*_gguf/Modelfile:
+    a system block only if one is supplied). HF training and HF evaluation use
+    it so they see the same tokens Ollama's evaluation does.
+    """
+    return f"<|im_start|>user\n{user_text}<|im_end|>\n<|im_start|>assistant\n"

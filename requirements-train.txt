@@ -1,0 +1,11 @@
+# Training / Colab only. CI and local evaluation do not need any of this.
+# Versions are NOT pinned on purpose: Colab ships its own torch/CUDA and
+# pinning against it breaks installs. Every run summary records the exact
+# versions it used (summary["env"]), and that is the reproducibility record.
+unsloth
+trl>=0.20
+peft
+transformers
+datasets
+accelerate
+mlflow-skinny

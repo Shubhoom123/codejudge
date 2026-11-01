@@ -28,6 +28,9 @@ qwen_finetuned*/
 qwen_finetuned*_gguf/
 
 data/training_runs/**/training_data.json
+# ...except the retained 1000-attempt teacher run: it is committed on purpose (it is the
+# evidence behind the training.* ledger entries and the source of DPO pairs).
+!data/training_runs/ambigous_spec/training_data.json
 data/training_runs/**/filtered_data.json
 data/training_runs/**/train.jsonl
 data/training_runs/**/mlx_train.jsonl
@@ -75,3 +78,8 @@ hf_token.txt
 *.token
 tokens/
 secrets/
+# training run outputs: adapters, per-case eval results, local MLflow store.
+# The small per-run summaries under experiments/ ARE committed (ledger inputs).
+runs/
+mlruns/
+experiments/**/*.per_case.json

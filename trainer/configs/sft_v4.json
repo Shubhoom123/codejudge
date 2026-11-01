@@ -1,0 +1,38 @@
+{
+  "experiment": "phase1_sft_v4",
+  "task": "ambigous_spec",
+  "base_model": "Qwen/Qwen2-1.5B-Instruct",
+  "backend": "unsloth",
+  "load_in_4bit": false,
+  "max_seq_length": 2048,
+  "lora": {
+    "r": 16,
+    "alpha": 32,
+    "dropout": 0.0,
+    "target_modules": ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+  },
+  "train": {
+    "epochs": 3,
+    "per_device_batch_size": 2,
+    "grad_accum": 4,
+    "learning_rate": 0.0002,
+    "lr_scheduler": "linear",
+    "warmup_ratio": 0.1,
+    "weight_decay": 0.0,
+    "optim": "adamw_torch",
+    "logging_steps": 1
+  },
+  "data": {
+    "training_data": "data/training_runs/ambigous_spec/training_data.json",
+    "min_score": 1.0
+  },
+  "eval": {
+    "eval_set": "data/eval_sets/ambigous_spec_strat2000_seed42.jsonl",
+    "max_new_tokens": 1536,
+    "bootstrap_resamples": 2000,
+    "workers": 2
+  },
+  "mlflow": {"tracking_uri": "file:./mlruns"},
+  "summary_dir": "experiments/phase1",
+  "runs_dir": "runs"
+}

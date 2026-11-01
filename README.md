@@ -21,6 +21,7 @@ python evaluator.py --model qwen2:1.5b --task ambigous_spec
 - [Fine-tuning](#fine-tuning)
 - [REST API](#rest-api)
 - [Testing and CI](#testing-and-ci)
+- [Results ledger](#results-ledger)
 - [Project layout](#project-layout)
 - [Setup](#setup)
 - [Usage](#usage)
@@ -127,24 +128,23 @@ A handful of edge cases aren't naturally combinatorial: things like `"banana"` o
 
 Generation runs across a `multiprocessing.Pool`, and each worker streams cases straight to disk as newline-delimited JSON shards (`test_case_store.py`) instead of building one giant list in memory. A multi-million-case JSON array would need to be loaded whole just to read one record, and it doesn't belong in git anyway. Sampling from a corpus that size uses reservoir sampling (`reservoir_sample()`, Algorithm R), so pulling *k* cases for an evaluation run costs O(k) memory regardless of how large the corpus is.
 
-A real run on a 2020 MacBook, 4 worker processes:
+The committed corpus has <!--ledger:corpus.total_cases-->30,000,000<!--/ledger--> cases (4 workers; trimmed from a larger generation run, see the manifest note), of which <!--ledger:corpus.written_number-->14,172,601<!--/ledger--> (<!--ledger:corpus.written_number_pct-->47.2%<!--/ledger-->) are `written_number`. This table is rendered from the ledger, and the ledger entry records whether the counts were verified by streaming every shard or only copied from the manifest:
 
-```
-Total cases: 4,233,458
-Generation time: 5.11s  (827,894 cases/sec)
-
-By category:
-  written_number:   2,000,000
-  whitespace:          769,230
-  negative:            307,692
-  dollar_sign:         285,715
-  word_dollars:        285,715
-  plain_number:        285,715
-  comma_thousands:     181,728
-  decimal:             117,648
-  invalid:                   9
-  zero:                      6
-```
+<!--ledger:corpus.table-->
+| Category | Cases | Share of corpus |
+|---|---:|---:|
+| written_number | 14,172,601 | 47.2% |
+| whitespace | 5,451,000 | 18.2% |
+| negative | 2,180,399 | 7.3% |
+| dollar_sign | 2,024,658 | 6.7% |
+| word_dollars | 2,024,658 | 6.7% |
+| plain_number | 2,024,658 | 6.7% |
+| comma_thousands | 1,288,328 | 4.3% |
+| decimal | 833,683 | 2.8% |
+| invalid | 9 | 0.0% |
+| zero | 6 | 0.0% |
+| **total** | **30,000,000** | 100.0% |
+<!--/ledger-->
 
 That manifest (`data/test_cases_bulk/manifest.json`) is committed as evidence of what an actual generation run produced; the shard files themselves are gitignored, since they aren't something a git repo should hold. One limitation is called out directly in the manifest rather than glossed over: deduplication happens per worker, not globally, since workers operate on disjoint integer ranges. Exact duplicates across workers are possible in principle, just rare in practice. That's fine for a sampled evaluation corpus, not a claim of a perfectly unique set.
 
@@ -179,20 +179,24 @@ This section is a chronological, honest account of three fine-tuning attempts on
 
 **v1** (`qwen2-codejudge`, fine-tuned via Colab/Unsloth on 83 examples): 20/24 (83%) on the hand-written grader, every format passes except written numbers (`"fifty"`, `"one hundred"`, `"one thousand"`, `"one million"` all fail). That 83% understated the real gap. Sampling 2,000 cases from the 30-million-case corpus instead of 24 hand-picked ones gave a very different picture:
 
-```
-Overall: 1037/2000 = 51.8%
+<!--ledger:bulk_eval.table-->
+Overall: **1037/2000 = 51.8%** (`qwen2-codejudge`, uniform sample, seed 42)
 
-written_number      0/963     0.0%
-whitespace         357/357  100.0%
-dollar_sign        161/161  100.0%
-negative           140/140  100.0%
-plain_number       137/137  100.0%
-word_dollars       127/127  100.0%
-comma_thousands     69/69   100.0%
-decimal             46/46   100.0%
-```
+| Category | Passed | Total | Accuracy |
+|---|---:|---:|---:|
+| written_number | 0 | 963 | 0.0% |
+| whitespace | 357 | 357 | 100.0% |
+| dollar_sign | 161 | 161 | 100.0% |
+| negative | 140 | 140 | 100.0% |
+| plain_number | 137 | 137 | 100.0% |
+| word_dollars | 127 | 127 | 100.0% |
+| comma_thousands | 69 | 69 | 100.0% |
+| decimal | 46 | 46 | 100.0% |
+<!--/ledger-->
 
-Every non-written-number category is a clean 100%. `written_number` is a flat 0%, not "mostly fails", all of it. The 24-case grader only has 4 written-number cases (about 17%), so it undersold how much of the real input space that category represents; at true combinatorial scale it's closer to 47% of the corpus, since every integer contributes exactly one written-number phrase versus format variants that only fire on modulo gates.
+The sample is uniform (reservoir sampling), not stratified, and the ledger records whether re-drawing the seed-42 sample from the shards reproduces these exact inputs (`docs/RESULTS.md`). This is the only bulk eval in the repo: v2 and v3 have none.
+
+Every non-written-number category is a clean 100%. `written_number` is a flat 0%, not "mostly fails", all of it. The 24-case grader only has 4 written-number cases (about 17%), so it undersold how much of the real input space that category represents; at true combinatorial scale it's closer to <!--ledger:corpus.written_number_pct-->47.2%<!--/ledger--> of the corpus, since every integer contributes exactly one written-number phrase versus format variants that only fire on modulo gates.
 
 **Bug #1, found:** the training data behind v1 was mostly near-misses. Of the 83 examples, only 6 (7%) had a perfect grader score; the other 77 scored between 0.83 and 0.96, meaning each failed at least one category, and `trainer/reward.py`'s filtering threshold at the time (`score >= 0.8`) let all of them through as "high quality" anyway. A solution that aces every format except written numbers lands at exactly 20/24 = 0.833, clears 0.8 easily, and teaches the model that skipping written numbers is acceptable. Fixed: `reward.py` now defaults to `--min-score 1.0` (perfect solutions only), and a second, disagreeing filter that used to live inside `generate_training_data.py` (also defaulting to 0.8, and the one that actually produced v1's `train.jsonl`) was removed, so there's exactly one filtering decision in the pipeline now.
 
@@ -209,6 +213,35 @@ With all three bugs fixed, v3's real result: 20/24 (83%), the same four written-
 That's a meaningfully different finding than "the pipeline is buggy." All 20 of v3's training examples scored a perfect 24/24, meaning every one of them contained correct, working written-number parsing code, and none of it transferred to the fine-tuned model's default output. With `per_device_train_batch_size=2` and `gradient_accumulation_steps=4` (effective batch size 8) over 20 examples across 3 epochs, that's under 10 total optimizer steps, plausibly too little signal to shift a 1.5B model's greedy decoding toward reliably reproducing a genuinely novel ~20-30 line code pattern that its base pretraining doesn't already give it strong latent competence in. This wasn't tested further (a v4 with meaningfully more perfect training examples, likely requiring 1,000+ teacher attempts instead of 300 to collect enough given the ~5-12% perfect-score hit rate observed across runs, would be the next real experiment, not another pipeline audit).
 
 Net result: three real, verifiable bugs found and fixed in the fine-tuning pipeline (reward-filtering threshold, train/eval prompt mismatch, and a stop-token that was silently truncating generation). The written-number gap itself is still open, and the evidence now points specifically at training-data volume rather than at anything left broken in the harness.
+
+**Data collected for a v4 (<!--ledger:phase1.status-->no v4 training run is recorded yet<!--/ledger-->).** A later Kaggle T4 teacher run produced <!--ledger:training.attempts-->1,000<!--/ledger--> attempts, of which <!--ledger:training.perfect-->117<!--/ledger--> (<!--ledger:training.perfect_pct-->11.7%<!--/ledger-->) passed every grader test. The teacher fails the written-number tests in most attempts: <!--ledger:training.written_fail_rates-->`compound_written_number` 61.2%, `large_written_million` 59.8%, `written_thousand` 59.3%<!--/ledger-->. That file records no teacher model tag, seed or temperature, so the run can't be reproduced from the repo.
+
+**Stratified evaluation set and baselines.** The uniform 2,000-case sample above gives `invalid` (9 cases in the corpus) and `zero` (6) almost no coverage, so `tools/make_eval_set.py` freezes a stratified sample instead: at least 100 cases per category (the two tiny ones taken whole), the rest proportional to corpus size, committed with its sha256 under `data/eval_sets/`. Overall accuracy on it is reweighted by corpus share. The saved v1 to v3 solutions, re-scored on it (`tools/score_saved_solutions.py`):
+
+<!--ledger:eval_baselines.table-->
+| Model (saved solution) | Weighted accuracy | `written_number` | Hand grader |
+|---|---:|---:|---:|
+| `qwen2-codejudge-v2:latest` | 52.8% | 0.0% | 20/24 |
+| `qwen2-codejudge-v3:latest` | 52.8% | 0.0% | 20/24 |
+| `qwen2-codejudge:latest` | 52.8% | 0.0% | 20/24 |
+<!--/ledger-->
+
+The bootstrap confidence intervals resample test cases for one deterministic solution, so for a category a solution passes or fails whole they are degenerate. Training noise is the spread across seeds, which is what the ablation reports.
+
+**Phase 1: reproducible SFT (code written; runs happen on a Colab T4).** One cell of the ablation:
+
+```bash
+python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 117 --seed 0   # needs a CUDA GPU
+python trainer/sft_train.py --n 117 --seed 0 --dry-run                              # plan only, no GPU
+```
+
+`colab/run_phase1.py` runs a 2-step smoke test and then the full matrix (n in 20, 50, 117 x 3 seeds, plus a steps-matched control). Each run logs to MLflow and writes a summary JSON to `experiments/phase1/`, which the ledger ingests. The `sft_train.py` training path has not been executed in CI; the smoke run is the first real test of it. Ablation, rendered from the ledger:
+
+<!--ledger:phase1.table-->
+No v4 training runs are recorded in the ledger yet.
+<!--/ledger-->
+
+Provenance of the numbers above: the 20/24 grader scores for v1, v2 and v3 are recorded from saved run files (ledger entries `grader.*`). The training-set sizes and score mixes quoted for v1 to v3 (83, 33 and 20 examples; 77 of 83 near-misses) come from datasets that are no longer in the repo, so `docs/RESULTS.md` lists them as unverified.
 
 ---
 
@@ -244,15 +277,31 @@ uvicorn api.main:app --reload
 python -m pytest
 ```
 
-52 tests across seven files:
+<!--ledger:tests.collected-->98<!--/ledger--> tests (pytest-collected cases, so a parametrized test counts once per case) across <!--ledger:tests.files-->12<!--/ledger--> files:
 
 - `test_code_cleaning.py`, including the exact `check_parse_amount()` / undefined-`fifty` regression that motivated the module
 - `test_sandbox.py`, checking that CPU, memory, and process limits actually get enforced (the memory test is skipped on macOS, with the platform gap documented rather than hidden)
 - `test_shard_store.py`, covering `ShardWriter`, `iter_shards`, reservoir-sampling determinism (same seed produces the same sample), and edge cases like a sample size larger than the corpus or an empty corpus
 - `test_generate_test_cases_bulk.py`, including a regression test proving fixed edge-case candidates are validated against the reference solution rather than just assumed correct
 - `test_evaluator.py`, `test_graders.py`, and `test_reward.py`, covering the harness logic and each task's reference solution actually passing its own grader
+- `test_api.py`, covering the FastAPI endpoints and the path-traversal validation on `GET /results/{filename}`
+- `test_eval_set.py`, `test_evaluation.py` and `test_sft_train.py`, covering stratified allocation and its reproducibility, bootstrap and aggregation maths, and the SFT script's data selection, prompt-parity with the evaluators, and step planning (everything that runs without a GPU)
+- `test_ledger.py`, which fails if a test count in this README is typed by hand instead of rendered from the ledger, or if the ledger's test count goes stale
 
 GitHub Actions (`.github/workflows/ci.yml`) runs on every push and pull request to `main`: install dependencies (both `requirements.txt` and `api/requirements.txt`, the latter being what `test_api.py` needs `fastapi` and `httpx` for), run the full pytest suite, then `ruff check . --select=E9,F` to catch syntax errors and undefined names without being opinionated about style.
+
+---
+
+## Results ledger
+
+Every headline number in this README is rendered from `results_ledger.json`, not typed. Each entry records the git commit (and whether the tree was dirty), the date, the seed and model tag where they apply, the source artifact and the command that regenerates it. `docs/RESULTS.md` is the human-readable rendering.
+
+```bash
+python tools/build_ledger.py            # re-measure everything (needs the gitignored shards and results/ for full verification)
+python tools/build_ledger.py --check    # no measuring: do README and docs/RESULTS.md match the committed ledger?
+```
+
+Entries are tagged `measured`, `recorded` (read from a saved artifact of a run that can't be repeated here), `manifest_claim` (not re-counted) or `unverified`. A figure that nothing in the repo supports is listed as `unverified` in `docs/RESULTS.md` instead of being repeated here. `tests/test_ledger.py` enforces the rule.
 
 ---
 
@@ -266,6 +315,9 @@ codejudge/
 ├── sandbox.py                # The one place model-generated code actually executes
 ├── code_cleaning.py          # Fence-stripping + AST-based side-effect removal
 ├── test_case_store.py        # Sharded JSONL storage + reservoir sampling
+├── evaluation.py             # Scoring, bootstrap CIs, run diagnostics, ablation aggregation
+├── requirements-train.txt    # Colab-only training dependencies
+├── results_ledger.json       # Every headline number, with commit/seed/model tag/date/source
 ├── requirements.txt
 ├── pytest.ini
 │
@@ -284,24 +336,34 @@ codejudge/
 ├── trainer/
 │   ├── generate_training_data.py   # Teacher sampling + grading (Colab/Unsloth path)
 │   ├── reward.py                   # The single filtering step: raw attempts -> filtered_data.json + train.jsonl
-│   └── finetune.py                 # Local LoRA fine-tuning via mlx-lm (Apple Silicon)
+│   ├── finetune.py                 # Local LoRA fine-tuning via mlx-lm (Apple Silicon)
+│   ├── sft_train.py                # Reproducible TRL/PEFT/Unsloth SFT run + eval + MLflow (GPU)
+│   └── configs/sft_v4.json         # Hyperparameters for sft_train.py
 │
 ├── tools/
 │   ├── generate_test_cases.py        # Original single-file, ~56k-case generator
 │   ├── generate_test_cases_bulk.py   # Sharded, multi-million-case, multiprocessing generator
 │   ├── evaluate_at_scale.py          # Sample N cases from a corpus, score by category
-│   └── debug_model.py                # Inspect raw vs. cleaned model output for one input
+│   ├── debug_model.py                # Inspect raw vs. cleaned model output for one input
+│   ├── make_eval_set.py              # Freeze the stratified eval sample
+│   ├── score_saved_solutions.py      # Re-score saved v1-v3 solutions on the eval set
+│   └── build_ledger.py               # Measure everything, write results_ledger.json + docs/RESULTS.md
 │
 ├── api/
 │   ├── main.py                # FastAPI wrapper
 │   └── requirements.txt
+│
+├── colab/run_phase1.py        # Smoke test + ablation matrix for a Colab T4
+├── experiments/               # Committed run summaries (ledger inputs)
+├── docs/
+│   └── RESULTS.md             # Generated from the ledger; do not edit by hand
 │
 ├── benchmark/
 │   ├── run_before.py
 │   ├── run_after.py
 │   └── compare.py
 │
-├── tests/                     # pytest suite (52 tests, see above)
+├── tests/                     # pytest suite (see Testing and CI)
 ├── results/                   # evaluator.py run_<timestamp>.json output (gitignored)
 ├── data/                      # training runs, checkpoints, corpora (gitignored except manifests)
 └── .github/workflows/ci.yml

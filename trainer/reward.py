@@ -96,7 +96,7 @@ def main():
                 "output": ex["output"],
             }) + "\n")
 
-    print(f"\nSaved:")
+    print("\nSaved:")
     print(f"  Filtered   -> {output_file}")
     print(f"  Colab JSONL -> {jsonl_file}")
 
