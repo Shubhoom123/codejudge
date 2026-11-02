@@ -95,6 +95,8 @@ def test_config_validation(tmp_path):
         st.load_config(bad)
     with pytest.raises(ValueError):
         st.load_config(CFG_PATH, {"backend": "tensorflow"})
+    # Colab's current MLflow raises on the file store ("maintenance mode") before training starts
+    assert st.load_config(CFG_PATH)["mlflow"]["tracking_uri"].startswith("sqlite:")
 
 
 def test_importing_the_trainer_does_not_need_torch_and_dry_run_works_without_a_gpu():

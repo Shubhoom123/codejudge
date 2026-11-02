@@ -74,7 +74,6 @@ def main() -> int:
         return rc
 
     summary_dir = ROOT / cfg["summary_dir"]
-    mlflow_uri = f"file:{args.drive_dir}/mlruns" if args.drive_dir else None
     failures = 0
     for cell in matrix(cfg):
         if cell["arm"] == "steps_matched" and args.no_supplementary:
@@ -86,8 +85,6 @@ def main() -> int:
         cmd = base + ["--n", str(cell["n"]), "--seed", str(cell["seed"]), "--arm", cell["arm"]]
         if cell["arm"] == "steps_matched":
             cmd += ["--target-steps", str(cell["target"])]
-        if mlflow_uri:
-            cmd += ["--mlflow-uri", mlflow_uri]
         if run(cmd) != 0:
             failures += 1
             print(f"FAILED {run_id}; continuing with the rest")
@@ -95,6 +92,9 @@ def main() -> int:
         if args.drive_dir:
             args.drive_dir.mkdir(parents=True, exist_ok=True)
             shutil.copytree(summary_dir, args.drive_dir / "summaries", dirs_exist_ok=True)
+            # MLflow keeps a local SQLite file (SQLite on a Drive mount is unreliable); copy it after each run
+            if (ROOT / "mlflow.db").exists():
+                shutil.copy2(ROOT / "mlflow.db", args.drive_dir / "mlflow.db")
     zip_path = shutil.make_archive("/content/phase1_summaries" if Path("/content").exists() else
                                    str(ROOT / "phase1_summaries"), "zip", summary_dir)
     print(f"{failures} failed run(s). Summaries zipped at {zip_path}: download it into experiments/phase1/.")

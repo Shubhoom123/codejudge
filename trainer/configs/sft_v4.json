@@ -32,7 +32,7 @@
     "bootstrap_resamples": 2000,
     "workers": 2
   },
-  "mlflow": {"tracking_uri": "file:./mlruns"},
+  "mlflow": {"tracking_uri": "sqlite:///mlflow.db"},
   "summary_dir": "experiments/phase1",
   "runs_dir": "runs"
 }

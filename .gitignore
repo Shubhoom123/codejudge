@@ -82,4 +82,6 @@ secrets/
 # The small per-run summaries under experiments/ ARE committed (ledger inputs).
 runs/
 mlruns/
+mlartifacts/
+mlflow.db
 experiments/**/*.per_case.json
