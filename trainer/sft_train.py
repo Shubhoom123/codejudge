@@ -197,8 +197,11 @@ def train_and_eval(cfg: dict, plan: dict, *, n: int, seed: int, arm: str, max_st
     else:
         from peft import LoraConfig, get_peft_model
         tokenizer = AutoTokenizer.from_pretrained(cfg["base_model"])
-        model = AutoModelForCausalLM.from_pretrained(
-            cfg["base_model"], torch_dtype=torch.bfloat16 if use_bf16 else torch.float16, device_map={"": 0})
+        dtype = torch.bfloat16 if use_bf16 else torch.float16
+        try:
+            model = AutoModelForCausalLM.from_pretrained(cfg["base_model"], dtype=dtype, device_map={"": 0})
+        except TypeError:  # older transformers
+            model = AutoModelForCausalLM.from_pretrained(cfg["base_model"], torch_dtype=dtype, device_map={"": 0})
         model.gradient_checkpointing_enable()
         model.enable_input_require_grads()
         model = get_peft_model(model, LoraConfig(
@@ -283,7 +286,7 @@ def train_and_eval(cfg: dict, plan: dict, *, n: int, seed: int, arm: str, max_st
                                      pad_token_id=tokenizer.pad_token_id, eos_token_id=stop_ids)
             new_ids = out[0][prompt_ids["input_ids"].shape[1]:]
             raw = tokenizer.decode(new_ids, skip_special_tokens=True)
-            finish = "eos" if int(new_ids[-1]) in stop_ids else "length"
+            finish = "empty" if len(new_ids) == 0 else ("eos" if int(new_ids[-1]) in stop_ids else "length")
 
             from code_cleaning import clean_llm_code
             from evaluator import run_solution_against_grader
@@ -308,7 +311,7 @@ def train_and_eval(cfg: dict, plan: dict, *, n: int, seed: int, arm: str, max_st
         model.save_pretrained(str(run_dir / "adapter"))
         summary_dir.mkdir(parents=True, exist_ok=True)
         out_path = summary_dir / f"{run_id}.json"
-        out_path.write_text(json.dumps(summary, indent=2) + "\n")
+        out_path.write_text(json.dumps(summary, indent=2, default=lambda o: float(o) if hasattr(o, "__float__") else str(o)) + "\n")
         mlflow.log_artifact(str(out_path))
     return summary
 

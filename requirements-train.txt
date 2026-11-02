@@ -8,4 +8,6 @@ peft
 transformers
 datasets
 accelerate
-mlflow-skinny
+mlflow
+openai
+requests

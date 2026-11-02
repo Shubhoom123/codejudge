@@ -97,6 +97,9 @@ def test_config_validation(tmp_path):
         st.load_config(CFG_PATH, {"backend": "tensorflow"})
     # Colab's current MLflow raises on the file store ("maintenance mode") before training starts
     assert st.load_config(CFG_PATH)["mlflow"]["tracking_uri"].startswith("sqlite:")
+    # sqlite store needs sqlalchemy+alembic, which mlflow-skinny lacks; evaluator.py imports openai at module level
+    req = (ROOT / "requirements-train.txt").read_text().split()
+    assert "mlflow" in req and "mlflow-skinny" not in req and "openai" in req
 
 
 def test_importing_the_trainer_does_not_need_torch_and_dry_run_works_without_a_gpu():
