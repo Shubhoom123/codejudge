@@ -17,7 +17,7 @@ so a disconnected session can be restarted with the same command. With
 run. Download experiments/phase1/*.json afterwards and put them in the repo:
 tools/build_ledger.py ingests them as `recorded` entries.
 
-Matrix: n in {20, 50, 117} x seeds {0, 1, 2} (the data-scaling ablation, fixed
+Matrix: an untrained `base` run (reference), then n in {20, 50, 117} x seeds {0, 1, 2} (the data-scaling ablation, fixed
 epochs), plus a supplementary `steps_matched` arm (n=20, 50 trained for as many
 optimizer steps as n=117) so "less data" can be told apart from "fewer updates".
 """
@@ -45,7 +45,8 @@ def run(cmd: list[str]) -> int:
 def matrix(cfg: dict) -> list[dict]:
     t = cfg["train"]
     target = sft_train.steps_per_epoch(max(SIZES), t["per_device_batch_size"], t["grad_accum"]) * t["epochs"]
-    cells = [{"arm": "scaling", "n": n, "seed": s} for s in SEEDS for n in SIZES]
+    cells = [{"arm": "base", "n": 0, "seed": 0}]  # untrained reference: checks the HF eval path, shows what training adds
+    cells += [{"arm": "scaling", "n": n, "seed": s} for s in SEEDS for n in SIZES]
     cells += [{"arm": "steps_matched", "n": n, "seed": s, "target": target} for s in SEEDS for n in (20, 50)]
     return cells
 
@@ -82,7 +83,8 @@ def main() -> int:
         if (summary_dir / f"{run_id}.json").exists():
             print(f"skip {run_id} (summary exists)")
             continue
-        cmd = base + ["--n", str(cell["n"]), "--seed", str(cell["seed"]), "--arm", cell["arm"]]
+        cmd = base + ["--arm", cell["arm"]] if cell["arm"] == "base" else base + [
+            "--n", str(cell["n"]), "--seed", str(cell["seed"]), "--arm", cell["arm"]]
         if cell["arm"] == "steps_matched":
             cmd += ["--target-steps", str(cell["target"])]
         if run(cmd) != 0:

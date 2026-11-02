@@ -109,6 +109,10 @@ def test_importing_the_trainer_does_not_need_torch_and_dry_run_works_without_a_g
     p = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
     assert p.returncode == 0, p.stderr
     assert "9 optimizer steps" in p.stdout
+    b = subprocess.run([sys.executable, "-c", code.replace("['--n','20','--seed','0','--dry-run']", "['--arm','base','--dry-run']")],
+                       capture_output=True, text=True)
+    assert b.returncode == 0, b.stderr
+    assert "untrained base model" in b.stdout
 
 
 def test_colab_matrix_covers_the_requested_ablation(cfg):
@@ -117,3 +121,4 @@ def test_colab_matrix_covers_the_requested_ablation(cfg):
     scaling = [c for c in cells if c["arm"] == "scaling"]
     assert {(c["n"], c["seed"]) for c in scaling} == {(n, s) for n in (20, 50, 117) for s in (0, 1, 2)}
     assert all(c["target"] == 45 for c in cells if c["arm"] == "steps_matched")
+    assert [c for c in cells if c["arm"] == "base"] == [{"arm": "base", "n": 0, "seed": 0}]
