@@ -1,0 +1,249 @@
+{
+  "schema": 1,
+  "kind": "sft_run",
+  "arm": "base",
+  "run_id": "phase1_sft_v4_base_n0_s0",
+  "n_examples": 0,
+  "seed": 0,
+  "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_base_n0_s0",
+  "base_model": "Qwen/Qwen2-1.5B-Instruct",
+  "backend_actual": "unsloth",
+  "config": {
+    "experiment": "phase1_sft_v4",
+    "task": "ambigous_spec",
+    "base_model": "Qwen/Qwen2-1.5B-Instruct",
+    "backend": "unsloth",
+    "load_in_4bit": false,
+    "max_seq_length": 2048,
+    "lora": {
+      "r": 16,
+      "alpha": 32,
+      "dropout": 0.0,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ]
+    },
+    "train": {
+      "epochs": 3,
+      "per_device_batch_size": 2,
+      "grad_accum": 4,
+      "learning_rate": 0.0002,
+      "lr_scheduler": "linear",
+      "warmup_ratio": 0.1,
+      "weight_decay": 0.0,
+      "optim": "adamw_torch",
+      "logging_steps": 1
+    },
+    "data": {
+      "training_data": "data/training_runs/ambigous_spec/training_data.json",
+      "min_score": 1.0
+    },
+    "eval": {
+      "eval_set": "data/eval_sets/ambigous_spec_strat2000_seed42.jsonl",
+      "max_new_tokens": 1536,
+      "bootstrap_resamples": 2000,
+      "workers": 2
+    },
+    "mlflow": {
+      "tracking_uri": "sqlite:///mlflow.db"
+    },
+    "summary_dir": "experiments/phase1",
+    "runs_dir": "runs"
+  },
+  "config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+  "data_sha256": null,
+  "epochs": 0,
+  "code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+  "dirty": true,
+  "date": "2026-11-02",
+  "python": "3.13.16",
+  "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
+  "env": {
+    "torch": "2.11.0+cu130",
+    "transformers": "5.17.0",
+    "trl": "1.15.0",
+    "peft": "0.21.2",
+    "unsloth": "2026.10.11",
+    "datasets": "4.8.5",
+    "mlflow": "3.17.2",
+    "mlflow-skinny": "3.17.2",
+    "accelerate": "1.15.0",
+    "gpu": "Tesla T4"
+  },
+  "training": {
+    "optimizer_steps": 0,
+    "loss": null,
+    "token_stats": null,
+    "log_history": []
+  },
+  "data_diagnostics": null,
+  "eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+  "metrics": {
+    "eval": {
+      "per_category": {
+        "comma_thousands": {
+          "passed": 0,
+          "total": 151,
+          "accuracy": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "decimal": {
+          "passed": 0,
+          "total": 133,
+          "accuracy": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "dollar_sign": {
+          "passed": 0,
+          "total": 180,
+          "accuracy": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "invalid": {
+          "passed": 9,
+          "total": 9,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "negative": {
+          "passed": 89,
+          "total": 186,
+          "accuracy": 0.4785,
+          "ci95": [
+            0.4086,
+            0.5484
+          ]
+        },
+        "plain_number": {
+          "passed": 180,
+          "total": 180,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "whitespace": {
+          "passed": 0,
+          "total": 315,
+          "accuracy": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "word_dollars": {
+          "passed": 0,
+          "total": 180,
+          "accuracy": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "written_number": {
+          "passed": 0,
+          "total": 660,
+          "accuracy": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "zero": {
+          "passed": 2,
+          "total": 6,
+          "accuracy": 0.3333,
+          "ci95": [
+            0.0,
+            0.6667
+          ]
+        }
+      },
+      "weighted": {
+        "accuracy": 0.1023,
+        "ci95": [
+          0.0972,
+          0.1073
+        ],
+        "weights": {
+          "comma_thousands": 0.042944,
+          "decimal": 0.027789,
+          "dollar_sign": 0.067489,
+          "invalid": 0.0,
+          "negative": 0.07268,
+          "plain_number": 0.067489,
+          "whitespace": 0.1817,
+          "word_dollars": 0.067489,
+          "written_number": 0.47242,
+          "zero": 0.0
+        }
+      },
+      "unweighted": {
+        "passed": 280,
+        "total": 2000,
+        "accuracy": 0.14
+      },
+      "bootstrap": {
+        "resamples": 2000,
+        "seed": 0,
+        "unit": "test cases within category"
+      }
+    },
+    "hand_grader": {
+      "passed": 9,
+      "total": 24,
+      "failed_tests": [
+        "dollar_sign",
+        "word_dollars",
+        "written_number_single",
+        "comma_thousands",
+        "negative_amount",
+        "zero",
+        "extra_whitespace",
+        "compound_written_number",
+        "decimal_cents",
+        "written_thousand",
+        "large_number",
+        "large_written_million",
+        "singular_dollar",
+        "tab_whitespace",
+        "comma_decimal"
+      ]
+    }
+  },
+  "diagnostics": {
+    "generation": {
+      "n_chars_raw": 160,
+      "n_chars_cleaned": 146,
+      "has_markdown_fence": true,
+      "cleaning_changed_code": true,
+      "parses": true,
+      "defines_parse_amount": true,
+      "mentions_written_number_words": false,
+      "n_new_tokens": 35,
+      "max_new_tokens": 1536,
+      "hit_max_new_tokens": false,
+      "finish_reason": "eos"
+    }
+  },
+  "solution": "def parse_amount(text: str) -> float:\n    try:\n        return float(text)\n    except ValueError:\n        raise ValueError(\"Invalid amount format\")"
+}

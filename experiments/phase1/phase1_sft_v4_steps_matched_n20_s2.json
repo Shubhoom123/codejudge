@@ -1,0 +1,570 @@
+{
+  "schema": 1,
+  "kind": "sft_run",
+  "arm": "steps_matched",
+  "run_id": "phase1_sft_v4_steps_matched_n20_s2",
+  "n_examples": 20,
+  "seed": 2,
+  "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_steps_matched_n20_s2",
+  "base_model": "Qwen/Qwen2-1.5B-Instruct",
+  "backend_actual": "unsloth",
+  "config": {
+    "experiment": "phase1_sft_v4",
+    "task": "ambigous_spec",
+    "base_model": "Qwen/Qwen2-1.5B-Instruct",
+    "backend": "unsloth",
+    "load_in_4bit": false,
+    "max_seq_length": 2048,
+    "lora": {
+      "r": 16,
+      "alpha": 32,
+      "dropout": 0.0,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ]
+    },
+    "train": {
+      "epochs": 3,
+      "per_device_batch_size": 2,
+      "grad_accum": 4,
+      "learning_rate": 0.0002,
+      "lr_scheduler": "linear",
+      "warmup_ratio": 0.1,
+      "weight_decay": 0.0,
+      "optim": "adamw_torch",
+      "logging_steps": 1
+    },
+    "data": {
+      "training_data": "data/training_runs/ambigous_spec/training_data.json",
+      "min_score": 1.0
+    },
+    "eval": {
+      "eval_set": "data/eval_sets/ambigous_spec_strat2000_seed42.jsonl",
+      "max_new_tokens": 1536,
+      "bootstrap_resamples": 2000,
+      "workers": 2
+    },
+    "mlflow": {
+      "tracking_uri": "sqlite:///mlflow.db"
+    },
+    "summary_dir": "experiments/phase1",
+    "runs_dir": "runs"
+  },
+  "config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+  "data_sha256": "4f4bfb132f40dd934d0c230b29daafea9674a99604c104866ddb4eb2747d5e85",
+  "epochs": 15,
+  "code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+  "dirty": true,
+  "date": "2026-11-03",
+  "python": "3.13.16",
+  "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
+  "env": {
+    "torch": "2.11.0+cu130",
+    "transformers": "5.17.0",
+    "trl": "1.15.0",
+    "peft": "0.21.2",
+    "unsloth": "2026.10.11",
+    "datasets": "4.8.5",
+    "mlflow": "3.17.2",
+    "mlflow-skinny": "3.17.2",
+    "accelerate": "1.15.0",
+    "gpu": "Tesla T4"
+  },
+  "training": {
+    "optimizer_steps": 45,
+    "loss": {
+      "n_logged": 45,
+      "first": 0.3887,
+      "last": 0.0292,
+      "min": 0.0265,
+      "decreased": true
+    },
+    "token_stats": {
+      "max": 1099,
+      "mean": 866.5,
+      "n_over_max_seq_length": 0,
+      "max_seq_length": 2048
+    },
+    "log_history": [
+      {
+        "loss": 0.38868,
+        "grad_norm": 0.37412,
+        "learning_rate": 0.0,
+        "epoch": 0.4,
+        "step": 1
+      },
+      {
+        "loss": 0.42462,
+        "grad_norm": 0.47331,
+        "learning_rate": 4e-05,
+        "epoch": 0.8,
+        "step": 2
+      },
+      {
+        "loss": 0.38203,
+        "grad_norm": 0.36332,
+        "learning_rate": 8e-05,
+        "epoch": 1.0,
+        "step": 3
+      },
+      {
+        "loss": 0.35595,
+        "grad_norm": 0.29631,
+        "learning_rate": 0.00012,
+        "epoch": 1.4,
+        "step": 4
+      },
+      {
+        "loss": 0.30018,
+        "grad_norm": 0.25891,
+        "learning_rate": 0.00016,
+        "epoch": 1.8,
+        "step": 5
+      },
+      {
+        "loss": 0.24809,
+        "grad_norm": 0.35383,
+        "learning_rate": 0.0002,
+        "epoch": 2.0,
+        "step": 6
+      },
+      {
+        "loss": 0.21474,
+        "grad_norm": 0.24345,
+        "learning_rate": 0.00019,
+        "epoch": 2.4,
+        "step": 7
+      },
+      {
+        "loss": 0.19017,
+        "grad_norm": 0.25762,
+        "learning_rate": 0.00019,
+        "epoch": 2.8,
+        "step": 8
+      },
+      {
+        "loss": 0.17408,
+        "grad_norm": 0.30629,
+        "learning_rate": 0.00019,
+        "epoch": 3.0,
+        "step": 9
+      },
+      {
+        "loss": 0.14321,
+        "grad_norm": 0.23903,
+        "learning_rate": 0.00018,
+        "epoch": 3.4,
+        "step": 10
+      },
+      {
+        "loss": 0.13677,
+        "grad_norm": 0.23175,
+        "learning_rate": 0.00017,
+        "epoch": 3.8,
+        "step": 11
+      },
+      {
+        "loss": 0.10647,
+        "grad_norm": 0.3217,
+        "learning_rate": 0.00017,
+        "epoch": 4.0,
+        "step": 12
+      },
+      {
+        "loss": 0.1124,
+        "grad_norm": 0.22611,
+        "learning_rate": 0.00016,
+        "epoch": 4.4,
+        "step": 13
+      },
+      {
+        "loss": 0.09216,
+        "grad_norm": 0.26198,
+        "learning_rate": 0.00016,
+        "epoch": 4.8,
+        "step": 14
+      },
+      {
+        "loss": 0.09783,
+        "grad_norm": 0.23402,
+        "learning_rate": 0.00015,
+        "epoch": 5.0,
+        "step": 15
+      },
+      {
+        "loss": 0.08085,
+        "grad_norm": 0.16999,
+        "learning_rate": 0.00015,
+        "epoch": 5.4,
+        "step": 16
+      },
+      {
+        "loss": 0.07758,
+        "grad_norm": 0.16006,
+        "learning_rate": 0.00015,
+        "epoch": 5.8,
+        "step": 17
+      },
+      {
+        "loss": 0.10049,
+        "grad_norm": 0.25712,
+        "learning_rate": 0.00014,
+        "epoch": 6.0,
+        "step": 18
+      },
+      {
+        "loss": 0.07496,
+        "grad_norm": 0.18205,
+        "learning_rate": 0.00014,
+        "epoch": 6.4,
+        "step": 19
+      },
+      {
+        "loss": 0.06318,
+        "grad_norm": 0.1545,
+        "learning_rate": 0.00013,
+        "epoch": 6.8,
+        "step": 20
+      },
+      {
+        "loss": 0.07383,
+        "grad_norm": 0.24436,
+        "learning_rate": 0.00013,
+        "epoch": 7.0,
+        "step": 21
+      },
+      {
+        "loss": 0.06887,
+        "grad_norm": 0.16183,
+        "learning_rate": 0.00012,
+        "epoch": 7.4,
+        "step": 22
+      },
+      {
+        "loss": 0.06152,
+        "grad_norm": 0.17106,
+        "learning_rate": 0.00011,
+        "epoch": 7.8,
+        "step": 23
+      },
+      {
+        "loss": 0.03383,
+        "grad_norm": 0.18403,
+        "learning_rate": 0.00011,
+        "epoch": 8.0,
+        "step": 24
+      },
+      {
+        "loss": 0.06156,
+        "grad_norm": 0.17404,
+        "learning_rate": 0.00011,
+        "epoch": 8.4,
+        "step": 25
+      },
+      {
+        "loss": 0.04785,
+        "grad_norm": 0.19061,
+        "learning_rate": 0.0001,
+        "epoch": 8.8,
+        "step": 26
+      },
+      {
+        "loss": 0.034,
+        "grad_norm": 0.18828,
+        "learning_rate": 0.0001,
+        "epoch": 9.0,
+        "step": 27
+      },
+      {
+        "loss": 0.04957,
+        "grad_norm": 0.17625,
+        "learning_rate": 9e-05,
+        "epoch": 9.4,
+        "step": 28
+      },
+      {
+        "loss": 0.04435,
+        "grad_norm": 0.17503,
+        "learning_rate": 9e-05,
+        "epoch": 9.8,
+        "step": 29
+      },
+      {
+        "loss": 0.03243,
+        "grad_norm": 0.25385,
+        "learning_rate": 8e-05,
+        "epoch": 10.0,
+        "step": 30
+      },
+      {
+        "loss": 0.03684,
+        "grad_norm": 0.18508,
+        "learning_rate": 8e-05,
+        "epoch": 10.4,
+        "step": 31
+      },
+      {
+        "loss": 0.03385,
+        "grad_norm": 0.163,
+        "learning_rate": 7e-05,
+        "epoch": 10.8,
+        "step": 32
+      },
+      {
+        "loss": 0.04947,
+        "grad_norm": 0.31248,
+        "learning_rate": 7e-05,
+        "epoch": 11.0,
+        "step": 33
+      },
+      {
+        "loss": 0.02985,
+        "grad_norm": 0.15472,
+        "learning_rate": 6e-05,
+        "epoch": 11.4,
+        "step": 34
+      },
+      {
+        "loss": 0.04009,
+        "grad_norm": 0.22562,
+        "learning_rate": 6e-05,
+        "epoch": 11.8,
+        "step": 35
+      },
+      {
+        "loss": 0.03565,
+        "grad_norm": 0.24744,
+        "learning_rate": 5e-05,
+        "epoch": 12.0,
+        "step": 36
+      },
+      {
+        "loss": 0.03136,
+        "grad_norm": 0.16444,
+        "learning_rate": 5e-05,
+        "epoch": 12.4,
+        "step": 37
+      },
+      {
+        "loss": 0.02975,
+        "grad_norm": 0.16223,
+        "learning_rate": 4e-05,
+        "epoch": 12.8,
+        "step": 38
+      },
+      {
+        "loss": 0.03922,
+        "grad_norm": 0.33886,
+        "learning_rate": 3e-05,
+        "epoch": 13.0,
+        "step": 39
+      },
+      {
+        "loss": 0.03126,
+        "grad_norm": 0.18597,
+        "learning_rate": 3e-05,
+        "epoch": 13.4,
+        "step": 40
+      },
+      {
+        "loss": 0.029,
+        "grad_norm": 0.15856,
+        "learning_rate": 3e-05,
+        "epoch": 13.8,
+        "step": 41
+      },
+      {
+        "loss": 0.02827,
+        "grad_norm": 0.26438,
+        "learning_rate": 2e-05,
+        "epoch": 14.0,
+        "step": 42
+      },
+      {
+        "loss": 0.02974,
+        "grad_norm": 0.1465,
+        "learning_rate": 2e-05,
+        "epoch": 14.4,
+        "step": 43
+      },
+      {
+        "loss": 0.02651,
+        "grad_norm": 0.22137,
+        "learning_rate": 1e-05,
+        "epoch": 14.8,
+        "step": 44
+      },
+      {
+        "loss": 0.0292,
+        "grad_norm": 0.23925,
+        "learning_rate": 1e-05,
+        "epoch": 15.0,
+        "step": 45
+      }
+    ]
+  },
+  "data_diagnostics": {
+    "n_examples": 20,
+    "n_unique_prompts": 1,
+    "n_unique_completions": 20,
+    "solution_chars": {
+      "min": 1949,
+      "max": 3190,
+      "mean": 2442.8
+    },
+    "n_mentioning_written_number_words": 20
+  },
+  "eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+  "metrics": {
+    "eval": {
+      "per_category": {
+        "comma_thousands": {
+          "passed": 151,
+          "total": 151,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "decimal": {
+          "passed": 133,
+          "total": 133,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "dollar_sign": {
+          "passed": 180,
+          "total": 180,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "invalid": {
+          "passed": 9,
+          "total": 9,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "negative": {
+          "passed": 186,
+          "total": 186,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "plain_number": {
+          "passed": 180,
+          "total": 180,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "whitespace": {
+          "passed": 315,
+          "total": 315,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "word_dollars": {
+          "passed": 180,
+          "total": 180,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "written_number": {
+          "passed": 25,
+          "total": 660,
+          "accuracy": 0.0379,
+          "ci95": [
+            0.0242,
+            0.053
+          ]
+        },
+        "zero": {
+          "passed": 6,
+          "total": 6,
+          "accuracy": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        }
+      },
+      "weighted": {
+        "accuracy": 0.5455,
+        "ci95": [
+          0.539,
+          0.5526
+        ],
+        "weights": {
+          "comma_thousands": 0.042944,
+          "decimal": 0.027789,
+          "dollar_sign": 0.067489,
+          "invalid": 0.0,
+          "negative": 0.07268,
+          "plain_number": 0.067489,
+          "whitespace": 0.1817,
+          "word_dollars": 0.067489,
+          "written_number": 0.47242,
+          "zero": 0.0
+        }
+      },
+      "unweighted": {
+        "passed": 1365,
+        "total": 2000,
+        "accuracy": 0.6825
+      },
+      "bootstrap": {
+        "resamples": 2000,
+        "seed": 0,
+        "unit": "test cases within category"
+      }
+    },
+    "hand_grader": {
+      "passed": 24,
+      "total": 24,
+      "failed_tests": []
+    }
+  },
+  "diagnostics": {
+    "generation": {
+      "n_chars_raw": 2354,
+      "n_chars_cleaned": 2354,
+      "has_markdown_fence": false,
+      "cleaning_changed_code": false,
+      "parses": true,
+      "defines_parse_amount": true,
+      "mentions_written_number_words": true,
+      "n_new_tokens": 647,
+      "max_new_tokens": 1536,
+      "hit_max_new_tokens": false,
+      "finish_reason": "eos"
+    }
+  },
+  "solution": "import re\n\ndef parse_amount(text: str) -> float:\n    \"\"\"Extracts a monetary amount from a user-typed string.\"\"\"\n    text = text.strip()\n    if not text:\n        raise ValueError(\"Cannot parse empty string\")\n\n    text = text.replace(\"$\", \"\")\n    text = text.replace(\",\", \"\")\n\n    if text.lower().endswith(\"dollars\"):\n        try:\n            return float(text[:-7])\n        except ValueError:\n            raise ValueError(\"Invalid amount format\")\n    elif text.lower().endswith(\"dollar\"):\n        try:\n            return float(text[:-6])\n        except ValueError:\n            raise ValueError(\"Invalid amount format\")\n\n    sign = 1\n    if text.startswith(\"-\"):\n        sign = -1\n        text = text[1:]\n\n    try:\n        amount = float(text)\n    except ValueError:\n        # Attempt to parse written numbers\n        try:\n            amount = number_to_float(text)\n        except ValueError:\n            raise ValueError(\"Invalid amount format\")\n\n    return sign * amount\n\n\ndef number_to_float(text):\n    \"\"\"Converts a written number (e.g., \"fifty\", \"one hundred\") to a float.\"\"\"\n    num_words = {\n        \"zero\": 0,\n        \"one\": 1,\n        \"two\": 2,\n        \"three\": 3,\n        \"four\": 4,\n        \"five\": 5,\n        \"six\": 6,\n        \"seven\": 7,\n        \"eight\": 8,\n        \"nine\": 9,\n        \"ten\": 10,\n        \"eleven\": 11,\n        \"twelve\": 12,\n        \"thirteen\": 13,\n        \"fourteen\": 14,\n        \"fifteen\": 15,\n        \"sixteen\": 16,\n        \"seventeen\": 17,\n        \"eighteen\": 18,\n        \"nineteen\": 19,\n        \"twenty\": 20,\n        \"thirty\": 30,\n        \"forty\": 40,\n        \"fifty\": 50,\n        \"sixty\": 60,\n        \"seventy\": 70,\n        \"eighty\": 80,\n        \"ninety\": 90,\n        \"hundred\": 100,\n        \"thousand\": 1000,\n        \"million\": 1000000,\n    }\n\n    words = text.split()\n    total = 0\n    multiplier = 1\n\n    for i in range(len(words) - 1, -1, -1):\n        word = words[i].lower()\n        if word == \"hundred\":\n            multiplier *= 100\n        elif word == \"thousand\":\n            multiplier *= 1000\n        elif word == \"million\":\n            multiplier *= 1000000\n        else:\n            try:\n                num = num_words[word]\n                total += num * multiplier\n                multiplier = 1\n            except KeyError:\n                raise ValueError(\"Invalid amount format\")\n\n    return float(total)"
+}

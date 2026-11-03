@@ -85,3 +85,5 @@ mlruns/
 mlartifacts/
 mlflow.db
 experiments/**/*.per_case.json
+# DPO pair text is re-derivable (trainer/dpo_pairs.py); the .meta.json with its sha256 IS committed
+data/dpo/*.jsonl

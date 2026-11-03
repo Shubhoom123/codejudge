@@ -347,6 +347,28 @@ def measure_training(st: Stamp) -> dict:
     }
 
 
+def measure_dpo_pairs(st: Stamp) -> dict:
+    """Preference pairs rebuilt from the teacher attempts (trainer/dpo_pairs.py), checked against the committed meta."""
+    from trainer import dpo_pairs
+    seed = 0
+    meta_path_ = ROOT / "data" / "dpo" / f"ambigous_spec_pairs_seed{seed}.meta.json"
+    if not TRAINING_DATA.exists() or not meta_path_.exists():
+        return {}
+    _, meta = dpo_pairs.build(TRAINING_DATA, "ambigous_spec", seed=seed)
+    committed = json.loads(meta_path_.read_text())
+    src = rel(TRAINING_DATA)
+    cmd = "python trainer/dpo_pairs.py   # then python tools/build_ledger.py"
+    d = meta["diagnostics"]
+    return {
+        "dpo.pairs.n_pairs": st.entry(d["n_pairs"], kind="measured", source=src, command=cmd, seed=seed,
+                                      artifact_sha256=meta["pairs_sha256"]),
+        "dpo.pairs.matches_committed_meta": st.entry(committed["pairs_sha256"] == meta["pairs_sha256"], kind="measured",
+                                                     source=rel(meta_path_), command=cmd, seed=seed),
+        "dpo.pairs.diagnostics": st.entry(d, kind="measured", source=src, command=cmd, seed=seed,
+                                          notes="Grader-crash attempts (score 0, no per-test results) are never used as rejected."),
+    }
+
+
 def measure_eval_set(st: Stamp, verify: bool, redrawn_sha=None) -> dict:
     if not EVAL_SET.exists():
         return {}
@@ -466,6 +488,7 @@ def build_ledger(verify_corpus: bool) -> dict:
     entries.update(measure_bulk_eval(st, verify_corpus, sample))
     entries.update(measure_saved_grader_runs(st))
     entries.update(measure_training(st))
+    entries.update(measure_dpo_pairs(st))
     entries.update(measure_eval_set(st, verify_corpus, redrawn))
     entries.update(measure_experiments(st))
     entries.update(measure_unverified(st))
@@ -539,7 +562,18 @@ def _phase1_status(E: dict) -> str:
     return "no v4 training run is recorded yet" if n == 0 else f"{n} v4 training runs recorded"
 
 
+def _dpo_pairs_summary(E: dict) -> str:
+    d = E["dpo.pairs.diagnostics"]["value"]
+    t, c = d["tier_counts"], d["chars"]
+    return (f"{d['n_pairs']} pairs from {d['n_unique_chosen']} perfect attempts and {d['n_unique_rejected']} distinct "
+            f"lower-scoring ones (tiers: {t['near']} near, {t['mid']} mid, {t['far']} far; mean score margin "
+            f"{d['margin']['mean']:.3f}, minimum {d['margin']['min']:.3f}). The rejected attempt fails a written-number test in "
+            f"{pct(d['frac_pairs_rejected_fails_a_written_number_test'])} of pairs, and is longer than the chosen one in "
+            f"{pct(c['frac_pairs_rejected_longer'])} of pairs ({c['rejected_mean']:.0f} vs {c['chosen_mean']:.0f} characters on average)")
+
+
 RENDERERS = {
+    "dpo.pairs.summary": _dpo_pairs_summary,
     "tests.collected": lambda E: str(E["tests.collected"]["value"]),
     "tests.files": lambda E: str(E["tests.files"]["value"]),
     "corpus.total_cases": lambda E: f"{E['corpus.total_cases']['value']:,}",

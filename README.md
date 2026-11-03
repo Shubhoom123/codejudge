@@ -214,7 +214,7 @@ That's a meaningfully different finding than "the pipeline is buggy." All 20 of 
 
 Net result: three real, verifiable bugs found and fixed in the fine-tuning pipeline (reward-filtering threshold, train/eval prompt mismatch, and a stop-token that was silently truncating generation). The written-number gap itself is still open, and the evidence now points specifically at training-data volume rather than at anything left broken in the harness.
 
-**Data collected for a v4 (<!--ledger:phase1.status-->no v4 training run is recorded yet<!--/ledger-->).** A later Kaggle T4 teacher run produced <!--ledger:training.attempts-->1,000<!--/ledger--> attempts, of which <!--ledger:training.perfect-->117<!--/ledger--> (<!--ledger:training.perfect_pct-->11.7%<!--/ledger-->) passed every grader test. The teacher fails the written-number tests in most attempts: <!--ledger:training.written_fail_rates-->`compound_written_number` 61.2%, `large_written_million` 59.8%, `written_thousand` 59.3%<!--/ledger-->. That file records no teacher model tag, seed or temperature, so the run can't be reproduced from the repo.
+**Data collected for a v4 (<!--ledger:phase1.status-->16 v4 training runs recorded<!--/ledger-->).** A later Kaggle T4 teacher run produced <!--ledger:training.attempts-->1,000<!--/ledger--> attempts, of which <!--ledger:training.perfect-->117<!--/ledger--> (<!--ledger:training.perfect_pct-->11.7%<!--/ledger-->) passed every grader test. The teacher fails the written-number tests in most attempts: <!--ledger:training.written_fail_rates-->`compound_written_number` 61.2%, `large_written_million` 59.8%, `written_thousand` 59.3%<!--/ledger-->. That file records no teacher model tag, seed or temperature, so the run can't be reproduced from the repo.
 
 **Stratified evaluation set and baselines.** The uniform 2,000-case sample above gives `invalid` (9 cases in the corpus) and `zero` (6) almost no coverage, so `tools/make_eval_set.py` freezes a stratified sample instead: at least 100 cases per category (the two tiny ones taken whole), the rest proportional to corpus size, committed with its sha256 under `data/eval_sets/`. Overall accuracy on it is reweighted by corpus share. The saved v1 to v3 solutions, re-scored on it (`tools/score_saved_solutions.py`):
 
@@ -235,13 +235,38 @@ python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 117 --seed 
 python trainer/sft_train.py --n 117 --seed 0 --dry-run                              # plan only, no GPU
 ```
 
-`colab/run_phase1.py` runs a 2-step smoke test and then the full matrix (n in 20, 50, 117 x 3 seeds, plus a steps-matched control). Each run logs to MLflow and writes a summary JSON to `experiments/phase1/`, which the ledger ingests. The `sft_train.py` training path has not been executed in CI; the smoke run is the first real test of it. Ablation, rendered from the ledger:
+`colab/run_phase1.py` runs a 2-step smoke test and then the full matrix (n in 20, 50, 117 x 3 seeds, plus a steps-matched control). Each run logs to MLflow and writes a summary JSON to `experiments/phase1/`, which the ledger ingests. The `sft_train.py` training path is not exercised in CI (CI has no GPU); the runs below were executed on a free Colab T4 (Unsloth, fp16), and `base` is the untrained model through the same evaluation path. Ablation, rendered from the ledger:
 
 <!--ledger:phase1.table-->
-No v4 training runs are recorded in the ledger yet.
+| Arm | Train n | Seeds | Weighted acc. (mean, std) | Hand grader /24 | comma_thousands | decimal | dollar_sign | invalid | negative | plain_number | whitespace | word_dollars | written_number | zero |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| base | 0 | 1 | 10.2% (std n/a) | 9 | 0.0% [0-0] | 0.0% [0-0] | 0.0% [0-0] | 100.0% [100-100] | 47.9% [48-48] | 100.0% [100-100] | 0.0% [0-0] | 0.0% [0-0] | 0.0% [0-0] | 33.3% [33-33] |
+| scaling | 20 | 3 | 46.0% (std 0.0) | 18/18/18 | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 0.0% [0-0] | 0.0% [0-0] | 66.7% [67-67] |
+| scaling | 50 | 3 | 36.2% (std 24.4) | 19/10/24 | 66.7% [0-100] | 66.7% [0-100] | 66.7% [0-100] | 100.0% [100-100] | 33.3% [0-100] | 66.7% [0-100] | 66.7% [0-100] | 100.0% [100-100] | 2.5% [0-4] | 77.8% [33-100] |
+| scaling | 117 | 3 | 53.0% (std 0.3) | 23/20/24 | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 0.5% [0-1] | 94.4% [83-100] |
+| steps_matched | 20 | 3 | 54.1% (std 0.7) | 24/24/24 | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 2.9% [1-4] | 100.0% [100-100] |
+| steps_matched | 50 | 3 | 50.9% (std 4.8) | 17/24/19 | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 66.7% [11-100] | 66.7% [0-100] | 100.0% [100-100] | 100.0% [100-100] | 100.0% [100-100] | 1.3% [0-4] | 94.4% [83-100] |
+
+Per-category cells are the mean across seeds with the [min-max] seed range. Per-seed bootstrap 95% CIs are in the run summaries under `experiments/`.
 <!--/ledger-->
 
+**What Phase 1 shows (negative result).** SFT on the 117 perfect teacher attempts did not improve the model on the case that matters. Reading the table:
+
+- **The weighted score is capped by one category.** `written_number` is 47.2% of the corpus, so a model that solves every other category and none of `written_number` scores 52.8%, which is exactly what v1 to v3 scored. Every v4 run that works lands between 52.8% and 54.5%; the extra 1.7 points at most come from `written_number` going from 0% to about 4%. No run solves it.
+- **Training itself works.** Loss fell in all 15 trained runs, all 16 generations ended with the stop token (none hit the 1536-token limit, so truncation is ruled out), all parse and define `parse_amount`, and 12 of 15 trained solutions mention written-number words. The model writes plausible written-number handling that is still wrong on 96% or more of the written-number cases. The three `n=20`, 9-step runs are the exception: no written-number words and no `word_dollars` support.
+- **The ablation mostly measures optimizer steps and luck, not data size.** `n=20` with 9 steps scores 46.0% on all three seeds, but the same 20 examples trained for 45 steps (`steps_matched`) score 54.1%, above `n=117` at 53.0%. `n=50` is unstable: one seed collapsed to 8.5% (failing most basic categories) with a training loss similar to its neighbours.
+- **Each run is one greedy sample.** Per-category accuracy is all-or-nothing because the model emits a single program, so the bootstrap over test cases is degenerate and the only honest uncertainty is the spread across seeds, with n=3.
+- **All 117 training examples share one prompt**, so this is behaviour cloning of one prompt's solutions, not data diversity.
+
+So Phase 1 supports "v4 matches v1 to v3 on 52.8% of the corpus and does not solve written numbers", not "SFT improved CodeJudge". All 16 run summaries record commit `0b34222` with `dirty=true`; I did not investigate why the Colab tree counted as dirty.
+
 Provenance of the numbers above: the 20/24 grader scores for v1, v2 and v3 are recorded from saved run files (ledger entries `grader.*`). The training-set sizes and score mixes quoted for v1 to v3 (83, 33 and 20 examples; 77 of 83 near-misses) come from datasets that are no longer in the repo, so `docs/RESULTS.md` lists them as unverified.
+
+### Phase 2: preference pairs for DPO
+
+`trainer/dpo_pairs.py` builds (chosen, rejected) pairs from the same teacher attempts. Chosen is an attempt that passed all 24 grader tests; rejected is a lower-scoring attempt for the same prompt, drawn in three score-margin tiers so the pairs are not all easy. Attempts whose grader crashed are never used as rejected. Current pairs, rendered from the ledger: <!--ledger:dpo.pairs.summary-->468 pairs from 117 perfect attempts and 360 distinct lower-scoring ones (tiers: 117 near, 234 mid, 117 far; mean score margin 0.150, minimum 0.040). The rejected attempt fails a written-number test in 69.2% of pairs, and is longer than the chosen one in 59.2% of pairs (2612 vs 2474 characters on average)<!--/ledger-->.
+
+The length gap is a known confound: DPO can learn "shorter" instead of "correct". It is small here but not zero. The pair text is re-derivable and not committed; `data/dpo/*.meta.json` holds its sha256 and diagnostics, and `trainer/dpo_train.py` refuses to train if the rebuilt pairs differ from it. `trainer/dpo_train.py` and `colab/run_phase2.py` run SFT then DPO per seed for a paired SFT-only vs SFT+DPO comparison. **No DPO training run has been executed yet, so there are no Phase 2 accuracy numbers.** A QLoRA arm is not implemented.
 
 ---
 
@@ -277,7 +302,7 @@ uvicorn api.main:app --reload
 python -m pytest
 ```
 
-<!--ledger:tests.collected-->98<!--/ledger--> tests (pytest-collected cases, so a parametrized test counts once per case) across <!--ledger:tests.files-->12<!--/ledger--> files:
+<!--ledger:tests.collected-->101<!--/ledger--> tests (pytest-collected cases, so a parametrized test counts once per case) across <!--ledger:tests.files-->13<!--/ledger--> files:
 
 - `test_code_cleaning.py`, including the exact `check_parse_amount()` / undefined-`fifty` regression that motivated the module
 - `test_sandbox.py`, checking that CPU, memory, and process limits actually get enforced (the memory test is skipped on macOS, with the platform gap documented rather than hidden)

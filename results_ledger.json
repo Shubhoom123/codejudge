@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
   "generated_by": "tools/build_ledger.py",
-  "generated_at": "2026-11-01T17:15:51Z",
+  "generated_at": "2026-11-03T03:48:03Z",
   "git": {
-    "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-    "dirty": false,
+    "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+    "dirty": true,
     "branch": "main"
   },
   "environment": {
-    "python": "3.14.6",
-    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
-    "machine": "arm64"
+    "python": "3.12.16",
+    "platform": "Linux-6.8.0-138-generic-aarch64-with-glibc2.35",
+    "machine": "aarch64"
   },
   "entries": {
     "corpus.total_cases": {
@@ -18,9 +18,9 @@
       "kind": "measured",
       "source": "data/test_cases_bulk/manifest.json",
       "command": "python tools/build_ledger.py   # streams every shard",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null,
       "verified_against_manifest": true,
@@ -44,9 +44,9 @@
       "kind": "measured",
       "source": "data/test_cases_bulk/manifest.json",
       "command": "python tools/build_ledger.py   # streams every shard",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null
     },
@@ -55,9 +55,9 @@
       "kind": "measured",
       "source": "data/test_cases_bulk/manifest.json",
       "command": "python tools/build_ledger.py   # streams every shard",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null,
       "notes": "written_number cases / total cases (fraction, not percent)."
@@ -67,9 +67,9 @@
       "kind": "recorded",
       "source": "data/test_cases_bulk/manifest.json",
       "command": "cat data/test_cases_bulk/manifest.json",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null
     },
@@ -125,9 +125,9 @@
       "kind": "measured",
       "source": "data/qwen2_codejudge_bulk_eval.json",
       "command": "python tools/evaluate_at_scale.py --model qwen2-codejudge --task ambigous_spec --samples 2000 --seed 42 --output data/qwen2_codejudge_bulk_eval.json",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": 42,
       "model_tag": "qwen2-codejudge",
       "notes": "Recomputed from the per-case `results` list, not from the file's summary fields. Sampling is a uniform reservoir sample (Algorithm R), NOT stratified. This is the only 2000-case bulk eval in the repo; none exists for v2 or v3.",
@@ -138,9 +138,9 @@
       "kind": "measured",
       "source": "test_case_store.reservoir_sample",
       "command": "python -c \"from test_case_store import reservoir_sample as r; r('data/test_cases_bulk', k=2000, seed=42)\"",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": 42,
       "model_tag": null,
       "notes": "True = re-drawing the seeded sample from the current shards reproduces the eval file's inputs exactly (same order). null = shards unavailable, not checked."
@@ -159,9 +159,9 @@
       "kind": "recorded",
       "source": "results/run_20260715_132945.json",
       "command": "python evaluator.py --model qwen2-codejudge-v2:latest --task ambigous_spec",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": "qwen2-codejudge-v2:latest",
       "notes": "results/ is gitignored; re-running needs Ollama and the fine-tuned model, which are not in the repo.",
@@ -181,9 +181,9 @@
       "kind": "recorded",
       "source": "results/run_20260716_132610.json",
       "command": "python evaluator.py --model qwen2-codejudge-v3:latest --task ambigous_spec",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": "qwen2-codejudge-v3:latest",
       "notes": "results/ is gitignored; re-running needs Ollama and the fine-tuned model, which are not in the repo.",
@@ -203,9 +203,9 @@
       "kind": "recorded",
       "source": "results/run_20260713_171606.json",
       "command": "python evaluator.py --model qwen2-codejudge:latest --task ambigous_spec",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": "qwen2-codejudge:latest",
       "notes": "results/ is gitignored; re-running needs Ollama and the fine-tuned model, which are not in the repo.",
@@ -216,9 +216,9 @@
       "kind": "measured",
       "source": "data/training_runs/ambigous_spec/training_data.json",
       "command": "python -c 'import json; json.load(open(\"data/training_runs/ambigous_spec/training_data.json\"))'  # see tools/build_ledger.py::measure_training",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null,
       "notes": "The file records no teacher model tag, seed or temperature, so this run cannot be reproduced from the repo.",
@@ -229,9 +229,9 @@
       "kind": "measured",
       "source": "data/training_runs/ambigous_spec/training_data.json",
       "command": "python -c 'import json; json.load(open(\"data/training_runs/ambigous_spec/training_data.json\"))'  # see tools/build_ledger.py::measure_training",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null,
       "notes": "Attempts whose grader output contains per-test results; the rest errored."
@@ -241,9 +241,9 @@
       "kind": "measured",
       "source": "data/training_runs/ambigous_spec/training_data.json",
       "command": "python -c 'import json; json.load(open(\"data/training_runs/ambigous_spec/training_data.json\"))'  # see tools/build_ledger.py::measure_training",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null
     },
@@ -252,9 +252,9 @@
       "kind": "measured",
       "source": "data/training_runs/ambigous_spec/training_data.json",
       "command": "python -c 'import json; json.load(open(\"data/training_runs/ambigous_spec/training_data.json\"))'  # see tools/build_ledger.py::measure_training",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null,
       "notes": "perfect attempts / all attempts (fraction)."
@@ -264,9 +264,9 @@
       "kind": "measured",
       "source": "data/training_runs/ambigous_spec/training_data.json",
       "command": "python -c 'import json; json.load(open(\"data/training_runs/ambigous_spec/training_data.json\"))'  # see tools/build_ledger.py::measure_training",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null
     },
@@ -295,9 +295,9 @@
       "kind": "measured",
       "source": "data/training_runs/ambigous_spec/training_data.json",
       "command": "python -c 'import json; json.load(open(\"data/training_runs/ambigous_spec/training_data.json\"))'  # see tools/build_ledger.py::measure_training",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null
     },
@@ -427,12 +427,104 @@
       "kind": "measured",
       "source": "data/training_runs/ambigous_spec/training_data.json",
       "command": "python -c 'import json; json.load(open(\"data/training_runs/ambigous_spec/training_data.json\"))'  # see tools/build_ledger.py::measure_training",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null,
       "notes": "Per grader test, over graded attempts."
+    },
+    "dpo.pairs.n_pairs": {
+      "value": 468,
+      "kind": "measured",
+      "source": "data/training_runs/ambigous_spec/training_data.json",
+      "command": "python trainer/dpo_pairs.py   # then python tools/build_ledger.py",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 0,
+      "model_tag": null,
+      "artifact_sha256": "77a2d30afbec13aa677580608843e4647c653a74bfd936f3f2fab689a117e167"
+    },
+    "dpo.pairs.matches_committed_meta": {
+      "value": true,
+      "kind": "measured",
+      "source": "data/dpo/ambigous_spec_pairs_seed0.meta.json",
+      "command": "python trainer/dpo_pairs.py   # then python tools/build_ledger.py",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 0,
+      "model_tag": null
+    },
+    "dpo.pairs.diagnostics": {
+      "value": {
+        "n_raw": 1000,
+        "n_grader_crash_excluded": 9,
+        "n_other_task": 0,
+        "n_attempts_graded": 991,
+        "n_pairs": 468,
+        "n_unique_chosen": 117,
+        "n_unique_rejected": 360,
+        "max_times_a_rejected_is_reused": 5,
+        "tier_counts": {
+          "near": 117,
+          "mid": 234,
+          "far": 117
+        },
+        "margin": {
+          "min": 0.04,
+          "mean": 0.1499,
+          "max": 0.71,
+          "n_distinct": 14
+        },
+        "chars": {
+          "chosen_mean": 2473.7,
+          "rejected_mean": 2612.0,
+          "frac_pairs_rejected_longer": 0.5919
+        },
+        "rejected_failed_test_counts": {
+          "compound_written_number": 295,
+          "large_written_million": 285,
+          "written_thousand": 283,
+          "negative_amount": 139,
+          "negative_plain": 139,
+          "invalid_raises_valueerror": 95,
+          "number_with_letters_raises": 92,
+          "gibberish_raises": 91,
+          "written_number_single": 50,
+          "decimal_only": 32,
+          "singular_dollar": 23,
+          "word_dollars": 23,
+          "empty_string_raises": 22,
+          "comma_decimal": 21,
+          "decimal_cents": 21,
+          "dollar_sign": 21,
+          "large_number": 21,
+          "comma_thousands": 8,
+          "extra_whitespace": 8,
+          "leading_zeroes": 8,
+          "tab_whitespace": 8,
+          "whitespace_after": 8,
+          "whitespace_before": 8,
+          "zero": 7
+        },
+        "frac_pairs_rejected_fails_a_written_number_test": 0.6923,
+        "checks": {
+          "all_margins_positive": true,
+          "no_identical_pairs": true,
+          "no_duplicate_pairs": true
+        }
+      },
+      "kind": "measured",
+      "source": "data/training_runs/ambigous_spec/training_data.json",
+      "command": "python trainer/dpo_pairs.py   # then python tools/build_ledger.py",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 0,
+      "model_tag": null,
+      "notes": "Grader-crash attempts (score 0, no per-test results) are never used as rejected."
     },
     "eval_set.strat2000": {
       "value": {
@@ -456,9 +548,9 @@
       "kind": "measured",
       "source": "data/eval_sets/ambigous_spec_strat2000_seed42.jsonl",
       "command": "python tools/make_eval_set.py --size 2000 --floor 100 --seed 42",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": 42,
       "model_tag": null,
       "notes": "Stratified: floor per category, remainder proportional to corpus size. true = re-drawing from the current shards gives byte-identical cases; null = shards unavailable, not checked.",
@@ -478,9 +570,9 @@
       "kind": "recorded",
       "source": "experiments/baselines/qwen2-codejudge-v2_latest.json",
       "command": "python tools/score_saved_solutions.py",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": "qwen2-codejudge-v2:latest",
       "notes": "Saved solution text from a gitignored results/ file, re-scored on the frozen eval set.",
@@ -508,9 +600,9 @@
       "kind": "recorded",
       "source": "experiments/baselines/qwen2-codejudge-v3_latest.json",
       "command": "python tools/score_saved_solutions.py",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": "qwen2-codejudge-v3:latest",
       "notes": "Saved solution text from a gitignored results/ file, re-scored on the frozen eval set.",
@@ -538,9 +630,9 @@
       "kind": "recorded",
       "source": "experiments/baselines/qwen2-codejudge_latest.json",
       "command": "python tools/score_saved_solutions.py",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": "qwen2-codejudge:latest",
       "notes": "Saved solution text from a gitignored results/ file, re-scored on the frozen eval set.",
@@ -554,26 +646,1483 @@
       "run_env": null,
       "run_solution_sha256": "11cf01a0d9330c614f211f7344e7077fa2e550f718575ee2658a2c657466eb13"
     },
+    "exp.phase1_sft_v4_base_n0_s0": {
+      "value": {
+        "weighted_accuracy": 0.1023,
+        "weighted_ci95": [
+          0.0972,
+          0.1073
+        ],
+        "written_number_accuracy": 0.0,
+        "hand_grader_passed": 9,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/phase1/phase1_sft_v4_base_n0_s0.json",
+      "command": "python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 0 --seed 0 --arm base   # needs a CUDA GPU (Colab T4)",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 0,
+      "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_base_n0_s0",
+      "notes": "Written by the run itself; this script only reads it. Not re-executable without the original hardware/model.",
+      "artifact_sha256": "ff44a8e8e812c3ce171e4c645ad43bb541cb70394a76bb5b468e775daed6c520",
+      "run_code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "run_dirty": true,
+      "run_date": "2026-11-02",
+      "run_data_sha256": null,
+      "run_config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "trl": "1.15.0",
+        "peft": "0.21.2",
+        "unsloth": "2026.10.11",
+        "datasets": "4.8.5",
+        "mlflow": "3.17.2",
+        "mlflow-skinny": "3.17.2",
+        "accelerate": "1.15.0",
+        "gpu": "Tesla T4"
+      },
+      "run_solution_sha256": null
+    },
+    "exp.phase1_sft_v4_scaling_n117_s0": {
+      "value": {
+        "weighted_accuracy": 0.5297,
+        "weighted_ci95": [
+          0.5276,
+          0.5326
+        ],
+        "written_number_accuracy": 0.0045,
+        "hand_grader_passed": 23,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/phase1/phase1_sft_v4_scaling_n117_s0.json",
+      "command": "python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 117 --seed 0 --arm scaling   # needs a CUDA GPU (Colab T4)",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 0,
+      "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_scaling_n117_s0",
+      "notes": "Written by the run itself; this script only reads it. Not re-executable without the original hardware/model.",
+      "artifact_sha256": "6a95896cea91785858b07bb3f8afd62789df6ec714ef14514bb31fe012c2c9f8",
+      "run_code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "run_dirty": true,
+      "run_date": "2026-11-02",
+      "run_data_sha256": "0a63c48850718a7bf8f6bf28148ab89d48205453502a92e1a29f6d4511fc2f18",
+      "run_config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "trl": "1.15.0",
+        "peft": "0.21.2",
+        "unsloth": "2026.10.11",
+        "datasets": "4.8.5",
+        "mlflow": "3.17.2",
+        "mlflow-skinny": "3.17.2",
+        "accelerate": "1.15.0",
+        "gpu": "Tesla T4"
+      },
+      "run_solution_sha256": null
+    },
+    "exp.phase1_sft_v4_scaling_n117_s1": {
+      "value": {
+        "weighted_accuracy": 0.5276,
+        "weighted_ci95": [
+          0.5276,
+          0.5276
+        ],
+        "written_number_accuracy": 0.0,
+        "hand_grader_passed": 20,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/phase1/phase1_sft_v4_scaling_n117_s1.json",
+      "command": "python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 117 --seed 1 --arm scaling   # needs a CUDA GPU (Colab T4)",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 1,
+      "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_scaling_n117_s1",
+      "notes": "Written by the run itself; this script only reads it. Not re-executable without the original hardware/model.",
+      "artifact_sha256": "d53329adbf49ecd475bb9cf0a40ec77f979c37ba7501a5dc35ab4a414bb90431",
+      "run_code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "run_dirty": true,
+      "run_date": "2026-11-02",
+      "run_data_sha256": "0a63c48850718a7bf8f6bf28148ab89d48205453502a92e1a29f6d4511fc2f18",
+      "run_config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "trl": "1.15.0",
+        "peft": "0.21.2",
+        "unsloth": "2026.10.11",
+        "datasets": "4.8.5",
+        "mlflow": "3.17.2",
+        "mlflow-skinny": "3.17.2",
+        "accelerate": "1.15.0",
+        "gpu": "Tesla T4"
+      },
+      "run_solution_sha256": null
+    },
+    "exp.phase1_sft_v4_scaling_n117_s2": {
+      "value": {
+        "weighted_accuracy": 0.5333,
+        "weighted_ci95": [
+          0.5297,
+          0.5376
+        ],
+        "written_number_accuracy": 0.0121,
+        "hand_grader_passed": 24,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/phase1/phase1_sft_v4_scaling_n117_s2.json",
+      "command": "python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 117 --seed 2 --arm scaling   # needs a CUDA GPU (Colab T4)",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 2,
+      "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_scaling_n117_s2",
+      "notes": "Written by the run itself; this script only reads it. Not re-executable without the original hardware/model.",
+      "artifact_sha256": "79a4732f13eec9136165d95dc85c1557ca925db069d36fe264de8f7af7637a5a",
+      "run_code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "run_dirty": true,
+      "run_date": "2026-11-03",
+      "run_data_sha256": "0a63c48850718a7bf8f6bf28148ab89d48205453502a92e1a29f6d4511fc2f18",
+      "run_config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "trl": "1.15.0",
+        "peft": "0.21.2",
+        "unsloth": "2026.10.11",
+        "datasets": "4.8.5",
+        "mlflow": "3.17.2",
+        "mlflow-skinny": "3.17.2",
+        "accelerate": "1.15.0",
+        "gpu": "Tesla T4"
+      },
+      "run_solution_sha256": null
+    },
+    "exp.phase1_sft_v4_scaling_n20_s0": {
+      "value": {
+        "weighted_accuracy": 0.4601,
+        "weighted_ci95": [
+          0.4601,
+          0.4601
+        ],
+        "written_number_accuracy": 0.0,
+        "hand_grader_passed": 18,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/phase1/phase1_sft_v4_scaling_n20_s0.json",
+      "command": "python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 20 --seed 0 --arm scaling   # needs a CUDA GPU (Colab T4)",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 0,
+      "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_scaling_n20_s0",
+      "notes": "Written by the run itself; this script only reads it. Not re-executable without the original hardware/model.",
+      "artifact_sha256": "bd647e9da34c423dae622de0b943f71db474e0a30881918f3ba0f86002beac57",
+      "run_code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "run_dirty": true,
+      "run_date": "2026-11-02",
+      "run_data_sha256": "39c270e96347fbc9f542eb89db713c8d919fbefd908e5ba6d1ecbb924c6c4dc3",
+      "run_config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "trl": "1.15.0",
+        "peft": "0.21.2",
+        "unsloth": "2026.10.11",
+        "datasets": "4.8.5",
+        "mlflow": "3.17.2",
+        "mlflow-skinny": "3.17.2",
+        "accelerate": "1.15.0",
+        "gpu": "Tesla T4"
+      },
+      "run_solution_sha256": null
+    },
+    "exp.phase1_sft_v4_scaling_n20_s1": {
+      "value": {
+        "weighted_accuracy": 0.4601,
+        "weighted_ci95": [
+          0.4601,
+          0.4601
+        ],
+        "written_number_accuracy": 0.0,
+        "hand_grader_passed": 18,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/phase1/phase1_sft_v4_scaling_n20_s1.json",
+      "command": "python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 20 --seed 1 --arm scaling   # needs a CUDA GPU (Colab T4)",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 1,
+      "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_scaling_n20_s1",
+      "notes": "Written by the run itself; this script only reads it. Not re-executable without the original hardware/model.",
+      "artifact_sha256": "c154f493081f210501540d66248658e6cdb14fb0dbee03311b37a5c743027102",
+      "run_code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "run_dirty": true,
+      "run_date": "2026-11-02",
+      "run_data_sha256": "c343477fc205797c104b366afb2f5242696f117ff9236eadbe6000b19e605b87",
+      "run_config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "trl": "1.15.0",
+        "peft": "0.21.2",
+        "unsloth": "2026.10.11",
+        "datasets": "4.8.5",
+        "mlflow": "3.17.2",
+        "mlflow-skinny": "3.17.2",
+        "accelerate": "1.15.0",
+        "gpu": "Tesla T4"
+      },
+      "run_solution_sha256": null
+    },
+    "exp.phase1_sft_v4_scaling_n20_s2": {
+      "value": {
+        "weighted_accuracy": 0.4601,
+        "weighted_ci95": [
+          0.4601,
+          0.4601
+        ],
+        "written_number_accuracy": 0.0,
+        "hand_grader_passed": 18,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/phase1/phase1_sft_v4_scaling_n20_s2.json",
+      "command": "python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 20 --seed 2 --arm scaling   # needs a CUDA GPU (Colab T4)",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 2,
+      "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_scaling_n20_s2",
+      "notes": "Written by the run itself; this script only reads it. Not re-executable without the original hardware/model.",
+      "artifact_sha256": "abc2add6b82e33040bcc450c85670a1f55636b5277cf330f136ce3f3828e45a9",
+      "run_code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "run_dirty": true,
+      "run_date": "2026-11-03",
+      "run_data_sha256": "4f4bfb132f40dd934d0c230b29daafea9674a99604c104866ddb4eb2747d5e85",
+      "run_config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "trl": "1.15.0",
+        "peft": "0.21.2",
+        "unsloth": "2026.10.11",
+        "datasets": "4.8.5",
+        "mlflow": "3.17.2",
+        "mlflow-skinny": "3.17.2",
+        "accelerate": "1.15.0",
+        "gpu": "Tesla T4"
+      },
+      "run_solution_sha256": null
+    },
+    "exp.phase1_sft_v4_scaling_n50_s0": {
+      "value": {
+        "weighted_accuracy": 0.4549,
+        "weighted_ci95": [
+          0.4549,
+          0.4549
+        ],
+        "written_number_accuracy": 0.0,
+        "hand_grader_passed": 19,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/phase1/phase1_sft_v4_scaling_n50_s0.json",
+      "command": "python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 50 --seed 0 --arm scaling   # needs a CUDA GPU (Colab T4)",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 0,
+      "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_scaling_n50_s0",
+      "notes": "Written by the run itself; this script only reads it. Not re-executable without the original hardware/model.",
+      "artifact_sha256": "8fb6fe9a9d265861512e8cc5e6f254bf1b57bd2fb65ba5ec21f4927ee23bf003",
+      "run_code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "run_dirty": true,
+      "run_date": "2026-11-02",
+      "run_data_sha256": "e2ec37b12cb095596ddfe346014b8c657ed7f6b3e5dacd432ac932f4b5ee44b1",
+      "run_config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "trl": "1.15.0",
+        "peft": "0.21.2",
+        "unsloth": "2026.10.11",
+        "datasets": "4.8.5",
+        "mlflow": "3.17.2",
+        "mlflow-skinny": "3.17.2",
+        "accelerate": "1.15.0",
+        "gpu": "Tesla T4"
+      },
+      "run_solution_sha256": null
+    },
+    "exp.phase1_sft_v4_scaling_n50_s1": {
+      "value": {
+        "weighted_accuracy": 0.0854,
+        "weighted_ci95": [
+          0.0789,
+          0.0925
+        ],
+        "written_number_accuracy": 0.0379,
+        "hand_grader_passed": 10,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/phase1/phase1_sft_v4_scaling_n50_s1.json",
+      "command": "python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 50 --seed 1 --arm scaling   # needs a CUDA GPU (Colab T4)",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 1,
+      "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_scaling_n50_s1",
+      "notes": "Written by the run itself; this script only reads it. Not re-executable without the original hardware/model.",
+      "artifact_sha256": "d2d8111e81edc3f39d3bd6593c06063547aa884432701ddf375771677ca8fa2e",
+      "run_code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "run_dirty": true,
+      "run_date": "2026-11-02",
+      "run_data_sha256": "66f14a2d7dda013f9b6794323ea512d3a95573fb3c640bfba608b55613fe0d23",
+      "run_config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "trl": "1.15.0",
+        "peft": "0.21.2",
+        "unsloth": "2026.10.11",
+        "datasets": "4.8.5",
+        "mlflow": "3.17.2",
+        "mlflow-skinny": "3.17.2",
+        "accelerate": "1.15.0",
+        "gpu": "Tesla T4"
+      },
+      "run_solution_sha256": null
+    },
+    "exp.phase1_sft_v4_scaling_n50_s2": {
+      "value": {
+        "weighted_accuracy": 0.5455,
+        "weighted_ci95": [
+          0.539,
+          0.5526
+        ],
+        "written_number_accuracy": 0.0379,
+        "hand_grader_passed": 24,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/phase1/phase1_sft_v4_scaling_n50_s2.json",
+      "command": "python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 50 --seed 2 --arm scaling   # needs a CUDA GPU (Colab T4)",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 2,
+      "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_scaling_n50_s2",
+      "notes": "Written by the run itself; this script only reads it. Not re-executable without the original hardware/model.",
+      "artifact_sha256": "bd3e4ddf408be6b744bf9cc69b1547a870f8006fdcb0f2ce2c313d6f9b78729d",
+      "run_code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "run_dirty": true,
+      "run_date": "2026-11-03",
+      "run_data_sha256": "0f959ef6098457e0689b83ac6357e51346368c3c541cb1822d8267bcad755feb",
+      "run_config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "trl": "1.15.0",
+        "peft": "0.21.2",
+        "unsloth": "2026.10.11",
+        "datasets": "4.8.5",
+        "mlflow": "3.17.2",
+        "mlflow-skinny": "3.17.2",
+        "accelerate": "1.15.0",
+        "gpu": "Tesla T4"
+      },
+      "run_solution_sha256": null
+    },
+    "exp.phase1_sft_v4_steps_matched_n20_s0": {
+      "value": {
+        "weighted_accuracy": 0.5455,
+        "weighted_ci95": [
+          0.539,
+          0.5526
+        ],
+        "written_number_accuracy": 0.0379,
+        "hand_grader_passed": 24,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/phase1/phase1_sft_v4_steps_matched_n20_s0.json",
+      "command": "python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 20 --seed 0 --arm steps_matched   # needs a CUDA GPU (Colab T4)",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 0,
+      "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_steps_matched_n20_s0",
+      "notes": "Written by the run itself; this script only reads it. Not re-executable without the original hardware/model.",
+      "artifact_sha256": "b202902e590f113ecdc8168428669e2e02fdc119963f45af1dc3c89eb225ebc5",
+      "run_code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "run_dirty": true,
+      "run_date": "2026-11-03",
+      "run_data_sha256": "39c270e96347fbc9f542eb89db713c8d919fbefd908e5ba6d1ecbb924c6c4dc3",
+      "run_config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "trl": "1.15.0",
+        "peft": "0.21.2",
+        "unsloth": "2026.10.11",
+        "datasets": "4.8.5",
+        "mlflow": "3.17.2",
+        "mlflow-skinny": "3.17.2",
+        "accelerate": "1.15.0",
+        "gpu": "Tesla T4"
+      },
+      "run_solution_sha256": null
+    },
+    "exp.phase1_sft_v4_steps_matched_n20_s1": {
+      "value": {
+        "weighted_accuracy": 0.5333,
+        "weighted_ci95": [
+          0.5297,
+          0.5376
+        ],
+        "written_number_accuracy": 0.0121,
+        "hand_grader_passed": 24,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/phase1/phase1_sft_v4_steps_matched_n20_s1.json",
+      "command": "python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 20 --seed 1 --arm steps_matched   # needs a CUDA GPU (Colab T4)",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 1,
+      "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_steps_matched_n20_s1",
+      "notes": "Written by the run itself; this script only reads it. Not re-executable without the original hardware/model.",
+      "artifact_sha256": "9fea90daa5f783aefb88c1c6341ae33d3e7323389d4dfa001920b1ed8e87a60a",
+      "run_code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "run_dirty": true,
+      "run_date": "2026-11-03",
+      "run_data_sha256": "c343477fc205797c104b366afb2f5242696f117ff9236eadbe6000b19e605b87",
+      "run_config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "trl": "1.15.0",
+        "peft": "0.21.2",
+        "unsloth": "2026.10.11",
+        "datasets": "4.8.5",
+        "mlflow": "3.17.2",
+        "mlflow-skinny": "3.17.2",
+        "accelerate": "1.15.0",
+        "gpu": "Tesla T4"
+      },
+      "run_solution_sha256": null
+    },
+    "exp.phase1_sft_v4_steps_matched_n20_s2": {
+      "value": {
+        "weighted_accuracy": 0.5455,
+        "weighted_ci95": [
+          0.539,
+          0.5526
+        ],
+        "written_number_accuracy": 0.0379,
+        "hand_grader_passed": 24,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/phase1/phase1_sft_v4_steps_matched_n20_s2.json",
+      "command": "python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 20 --seed 2 --arm steps_matched   # needs a CUDA GPU (Colab T4)",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 2,
+      "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_steps_matched_n20_s2",
+      "notes": "Written by the run itself; this script only reads it. Not re-executable without the original hardware/model.",
+      "artifact_sha256": "403956b83f2c34b2f2a1ee9cd25e08832685d596658a0a92c56c6f3395a20002",
+      "run_code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "run_dirty": true,
+      "run_date": "2026-11-03",
+      "run_data_sha256": "4f4bfb132f40dd934d0c230b29daafea9674a99604c104866ddb4eb2747d5e85",
+      "run_config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "trl": "1.15.0",
+        "peft": "0.21.2",
+        "unsloth": "2026.10.11",
+        "datasets": "4.8.5",
+        "mlflow": "3.17.2",
+        "mlflow-skinny": "3.17.2",
+        "accelerate": "1.15.0",
+        "gpu": "Tesla T4"
+      },
+      "run_solution_sha256": null
+    },
+    "exp.phase1_sft_v4_steps_matched_n50_s0": {
+      "value": {
+        "weighted_accuracy": 0.5276,
+        "weighted_ci95": [
+          0.5276,
+          0.5276
+        ],
+        "written_number_accuracy": 0.0,
+        "hand_grader_passed": 17,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/phase1/phase1_sft_v4_steps_matched_n50_s0.json",
+      "command": "python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 50 --seed 0 --arm steps_matched   # needs a CUDA GPU (Colab T4)",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 0,
+      "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_steps_matched_n50_s0",
+      "notes": "Written by the run itself; this script only reads it. Not re-executable without the original hardware/model.",
+      "artifact_sha256": "f80e8631873bd2ba68d7e5d5517c4222ac89bbc1e5043d0d4cc791b1ded784de",
+      "run_code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "run_dirty": true,
+      "run_date": "2026-11-03",
+      "run_data_sha256": "e2ec37b12cb095596ddfe346014b8c657ed7f6b3e5dacd432ac932f4b5ee44b1",
+      "run_config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "trl": "1.15.0",
+        "peft": "0.21.2",
+        "unsloth": "2026.10.11",
+        "datasets": "4.8.5",
+        "mlflow": "3.17.2",
+        "mlflow-skinny": "3.17.2",
+        "accelerate": "1.15.0",
+        "gpu": "Tesla T4"
+      },
+      "run_solution_sha256": null
+    },
+    "exp.phase1_sft_v4_steps_matched_n50_s1": {
+      "value": {
+        "weighted_accuracy": 0.5455,
+        "weighted_ci95": [
+          0.539,
+          0.5526
+        ],
+        "written_number_accuracy": 0.0379,
+        "hand_grader_passed": 24,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/phase1/phase1_sft_v4_steps_matched_n50_s1.json",
+      "command": "python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 50 --seed 1 --arm steps_matched   # needs a CUDA GPU (Colab T4)",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 1,
+      "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_steps_matched_n50_s1",
+      "notes": "Written by the run itself; this script only reads it. Not re-executable without the original hardware/model.",
+      "artifact_sha256": "d5f835d2c5f5fa0476a09ad12a2579b082cec5ed4252f9803193fbf3b5693296",
+      "run_code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "run_dirty": true,
+      "run_date": "2026-11-03",
+      "run_data_sha256": "66f14a2d7dda013f9b6794323ea512d3a95573fb3c640bfba608b55613fe0d23",
+      "run_config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "trl": "1.15.0",
+        "peft": "0.21.2",
+        "unsloth": "2026.10.11",
+        "datasets": "4.8.5",
+        "mlflow": "3.17.2",
+        "mlflow-skinny": "3.17.2",
+        "accelerate": "1.15.0",
+        "gpu": "Tesla T4"
+      },
+      "run_solution_sha256": null
+    },
+    "exp.phase1_sft_v4_steps_matched_n50_s2": {
+      "value": {
+        "weighted_accuracy": 0.4549,
+        "weighted_ci95": [
+          0.4549,
+          0.4549
+        ],
+        "written_number_accuracy": 0.0,
+        "hand_grader_passed": 19,
+        "hand_grader_total": 24
+      },
+      "kind": "recorded",
+      "source": "experiments/phase1/phase1_sft_v4_steps_matched_n50_s2.json",
+      "command": "python trainer/sft_train.py --config trainer/configs/sft_v4.json --n 50 --seed 2 --arm steps_matched   # needs a CUDA GPU (Colab T4)",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
+      "seed": 2,
+      "model_tag": "Qwen/Qwen2-1.5B-Instruct+lora:phase1_sft_v4_steps_matched_n50_s2",
+      "notes": "Written by the run itself; this script only reads it. Not re-executable without the original hardware/model.",
+      "artifact_sha256": "b6dff0af5498452c6a3f95bbd4b9c1e432c7a5bfaeaec7f1b51df9b186358412",
+      "run_code_commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "run_dirty": true,
+      "run_date": "2026-11-03",
+      "run_data_sha256": "0f959ef6098457e0689b83ac6357e51346368c3c541cb1822d8267bcad755feb",
+      "run_config_sha256": "67dde9d3bf63cbba795d723b01b1c6821101202f95444b42d80dcb9b6e7e700b",
+      "run_eval_set_sha256": "5b3514250b80d9fcc1e1f42b8a877b59b8e345376c586e392aca5b535dc5706a",
+      "run_env": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "trl": "1.15.0",
+        "peft": "0.21.2",
+        "unsloth": "2026.10.11",
+        "datasets": "4.8.5",
+        "mlflow": "3.17.2",
+        "mlflow-skinny": "3.17.2",
+        "accelerate": "1.15.0",
+        "gpu": "Tesla T4"
+      },
+      "run_solution_sha256": null
+    },
     "phase1.ablation": {
-      "value": {},
+      "value": {
+        "base:n0": {
+          "arm": "base",
+          "n_examples": 0,
+          "seeds": [
+            0
+          ],
+          "weighted_accuracy": {
+            "mean": 0.1023,
+            "std": null,
+            "per_seed": [
+              0.1023
+            ],
+            "per_seed_ci95": [
+              [
+                0.0972,
+                0.1073
+              ]
+            ]
+          },
+          "hand_grader_passed": [
+            9
+          ],
+          "per_category": {
+            "comma_thousands": {
+              "mean": 0.0,
+              "min": 0.0,
+              "max": 0.0,
+              "per_seed": [
+                0.0
+              ]
+            },
+            "decimal": {
+              "mean": 0.0,
+              "min": 0.0,
+              "max": 0.0,
+              "per_seed": [
+                0.0
+              ]
+            },
+            "dollar_sign": {
+              "mean": 0.0,
+              "min": 0.0,
+              "max": 0.0,
+              "per_seed": [
+                0.0
+              ]
+            },
+            "invalid": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0
+              ]
+            },
+            "negative": {
+              "mean": 0.4785,
+              "min": 0.4785,
+              "max": 0.4785,
+              "per_seed": [
+                0.4785
+              ]
+            },
+            "plain_number": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0
+              ]
+            },
+            "whitespace": {
+              "mean": 0.0,
+              "min": 0.0,
+              "max": 0.0,
+              "per_seed": [
+                0.0
+              ]
+            },
+            "word_dollars": {
+              "mean": 0.0,
+              "min": 0.0,
+              "max": 0.0,
+              "per_seed": [
+                0.0
+              ]
+            },
+            "written_number": {
+              "mean": 0.0,
+              "min": 0.0,
+              "max": 0.0,
+              "per_seed": [
+                0.0
+              ]
+            },
+            "zero": {
+              "mean": 0.3333,
+              "min": 0.3333,
+              "max": 0.3333,
+              "per_seed": [
+                0.3333
+              ]
+            }
+          }
+        },
+        "scaling:n20": {
+          "arm": "scaling",
+          "n_examples": 20,
+          "seeds": [
+            0,
+            1,
+            2
+          ],
+          "weighted_accuracy": {
+            "mean": 0.4601,
+            "std": 0.0,
+            "per_seed": [
+              0.4601,
+              0.4601,
+              0.4601
+            ],
+            "per_seed_ci95": [
+              [
+                0.4601,
+                0.4601
+              ],
+              [
+                0.4601,
+                0.4601
+              ],
+              [
+                0.4601,
+                0.4601
+              ]
+            ]
+          },
+          "hand_grader_passed": [
+            18,
+            18,
+            18
+          ],
+          "per_category": {
+            "comma_thousands": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "decimal": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "dollar_sign": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "invalid": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "negative": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "plain_number": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "whitespace": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "word_dollars": {
+              "mean": 0.0,
+              "min": 0.0,
+              "max": 0.0,
+              "per_seed": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "written_number": {
+              "mean": 0.0,
+              "min": 0.0,
+              "max": 0.0,
+              "per_seed": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "zero": {
+              "mean": 0.6667,
+              "min": 0.6667,
+              "max": 0.6667,
+              "per_seed": [
+                0.6667,
+                0.6667,
+                0.6667
+              ]
+            }
+          }
+        },
+        "scaling:n50": {
+          "arm": "scaling",
+          "n_examples": 50,
+          "seeds": [
+            0,
+            1,
+            2
+          ],
+          "weighted_accuracy": {
+            "mean": 0.3619,
+            "std": 0.2437,
+            "per_seed": [
+              0.4549,
+              0.0854,
+              0.5455
+            ],
+            "per_seed_ci95": [
+              [
+                0.4549,
+                0.4549
+              ],
+              [
+                0.0789,
+                0.0925
+              ],
+              [
+                0.539,
+                0.5526
+              ]
+            ]
+          },
+          "hand_grader_passed": [
+            19,
+            10,
+            24
+          ],
+          "per_category": {
+            "comma_thousands": {
+              "mean": 0.6667,
+              "min": 0.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                0.0,
+                1.0
+              ]
+            },
+            "decimal": {
+              "mean": 0.6667,
+              "min": 0.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                0.0,
+                1.0
+              ]
+            },
+            "dollar_sign": {
+              "mean": 0.6667,
+              "min": 0.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                0.0,
+                1.0
+              ]
+            },
+            "invalid": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "negative": {
+              "mean": 0.3333,
+              "min": 0.0,
+              "max": 1.0,
+              "per_seed": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            "plain_number": {
+              "mean": 0.6667,
+              "min": 0.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                0.0,
+                1.0
+              ]
+            },
+            "whitespace": {
+              "mean": 0.6667,
+              "min": 0.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                0.0,
+                1.0
+              ]
+            },
+            "word_dollars": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "written_number": {
+              "mean": 0.0253,
+              "min": 0.0,
+              "max": 0.0379,
+              "per_seed": [
+                0.0,
+                0.0379,
+                0.0379
+              ]
+            },
+            "zero": {
+              "mean": 0.7778,
+              "min": 0.3333,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                0.3333,
+                1.0
+              ]
+            }
+          }
+        },
+        "scaling:n117": {
+          "arm": "scaling",
+          "n_examples": 117,
+          "seeds": [
+            0,
+            1,
+            2
+          ],
+          "weighted_accuracy": {
+            "mean": 0.5302,
+            "std": 0.0029,
+            "per_seed": [
+              0.5297,
+              0.5276,
+              0.5333
+            ],
+            "per_seed_ci95": [
+              [
+                0.5276,
+                0.5326
+              ],
+              [
+                0.5276,
+                0.5276
+              ],
+              [
+                0.5297,
+                0.5376
+              ]
+            ]
+          },
+          "hand_grader_passed": [
+            23,
+            20,
+            24
+          ],
+          "per_category": {
+            "comma_thousands": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "decimal": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "dollar_sign": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "invalid": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "negative": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "plain_number": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "whitespace": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "word_dollars": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "written_number": {
+              "mean": 0.0055,
+              "min": 0.0,
+              "max": 0.0121,
+              "per_seed": [
+                0.0045,
+                0.0,
+                0.0121
+              ]
+            },
+            "zero": {
+              "mean": 0.9444,
+              "min": 0.8333,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                0.8333,
+                1.0
+              ]
+            }
+          }
+        },
+        "steps_matched:n20": {
+          "arm": "steps_matched",
+          "n_examples": 20,
+          "seeds": [
+            0,
+            1,
+            2
+          ],
+          "weighted_accuracy": {
+            "mean": 0.5414,
+            "std": 0.007,
+            "per_seed": [
+              0.5455,
+              0.5333,
+              0.5455
+            ],
+            "per_seed_ci95": [
+              [
+                0.539,
+                0.5526
+              ],
+              [
+                0.5297,
+                0.5376
+              ],
+              [
+                0.539,
+                0.5526
+              ]
+            ]
+          },
+          "hand_grader_passed": [
+            24,
+            24,
+            24
+          ],
+          "per_category": {
+            "comma_thousands": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "decimal": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "dollar_sign": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "invalid": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "negative": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "plain_number": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "whitespace": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "word_dollars": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "written_number": {
+              "mean": 0.0293,
+              "min": 0.0121,
+              "max": 0.0379,
+              "per_seed": [
+                0.0379,
+                0.0121,
+                0.0379
+              ]
+            },
+            "zero": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            }
+          }
+        },
+        "steps_matched:n50": {
+          "arm": "steps_matched",
+          "n_examples": 50,
+          "seeds": [
+            0,
+            1,
+            2
+          ],
+          "weighted_accuracy": {
+            "mean": 0.5093,
+            "std": 0.048,
+            "per_seed": [
+              0.5276,
+              0.5455,
+              0.4549
+            ],
+            "per_seed_ci95": [
+              [
+                0.5276,
+                0.5276
+              ],
+              [
+                0.539,
+                0.5526
+              ],
+              [
+                0.4549,
+                0.4549
+              ]
+            ]
+          },
+          "hand_grader_passed": [
+            17,
+            24,
+            19
+          ],
+          "per_category": {
+            "comma_thousands": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "decimal": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "dollar_sign": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "invalid": {
+              "mean": 0.6667,
+              "min": 0.1111,
+              "max": 1.0,
+              "per_seed": [
+                0.1111,
+                1.0,
+                0.8889
+              ]
+            },
+            "negative": {
+              "mean": 0.6667,
+              "min": 0.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                0.0
+              ]
+            },
+            "plain_number": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "whitespace": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "word_dollars": {
+              "mean": 1.0,
+              "min": 1.0,
+              "max": 1.0,
+              "per_seed": [
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "written_number": {
+              "mean": 0.0126,
+              "min": 0.0,
+              "max": 0.0379,
+              "per_seed": [
+                0.0,
+                0.0379,
+                0.0
+              ]
+            },
+            "zero": {
+              "mean": 0.9444,
+              "min": 0.8333,
+              "max": 1.0,
+              "per_seed": [
+                0.8333,
+                1.0,
+                1.0
+              ]
+            }
+          }
+        }
+      },
       "kind": "measured",
       "source": "experiments/**/*.json",
       "command": "python tools/build_ledger.py   # evaluation.aggregate_runs over the run summaries",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null,
       "notes": "Mean and std across seeds of corpus-weighted accuracy; per-category mean and min-max. Bootstrap CIs resample test cases only (see evaluation.py docstring)."
     },
     "phase1.runs_recorded": {
-      "value": 0,
+      "value": 16,
       "kind": "measured",
       "source": "experiments/**/*.json",
       "command": "python tools/build_ledger.py",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null
     },
@@ -582,14 +2131,14 @@
       "kind": "unverified",
       "source": "resume (not in repo)",
       "command": "python tools/build_ledger.py   # search_for_figure('72\\\\.8\\\\s*%|(?<![\\\\d.])0?\\\\.728(?!\\\\d)')",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null,
       "notes": "Claim: 'v1/v3 scored 72.8% at scale'. No artifact in the repo contains this figure, and the only 2000-case bulk eval (seed 42) is v1 at 51.8%. No bulk eval exists for v2 or v3.",
       "search": {
-        "files_scanned": 44,
+        "files_scanned": 48,
         "file_hits": [],
         "git_commit_hits": [
           "df6070e Phase 0 ledger + Phase 1 SFT tooling"
@@ -601,9 +2150,9 @@
       "kind": "unverified",
       "source": "README.md (Fine-tuning > Where things actually stand)",
       "command": "n/a - the training files for v1-v3 are not in the repo",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null,
       "notes": "README says v1 trained on 83 examples (77 near-misses scoring 0.83-0.96, 6 perfect), v2 on 33 and v3 on 20 perfect examples. Those datasets and the Colab notebook are not in the repo, so these counts cannot be re-derived. The grader scores they produced (20/24 each) are recorded under grader.*."
@@ -613,33 +2162,33 @@
       "kind": "unverified",
       "source": "README.md (Known limitations)",
       "command": "n/a - only one teacher run (training.*) is retained",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null,
       "notes": "README cites a '~5-12%' perfect-score hit rate across runs. Only the 1000-attempt run is retained (training.perfect_pct)."
     },
     "tests.collected": {
-      "value": 98,
+      "value": 101,
       "kind": "measured",
       "source": "pytest --collect-only",
       "command": "python -m pytest -o addopts= -q --collect-only",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null,
       "notes": "Parametrized cases are counted individually."
     },
     "tests.files": {
-      "value": 12,
+      "value": 13,
       "kind": "measured",
       "source": "pytest --collect-only",
       "command": "python -m pytest -o addopts= -q --collect-only",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null
     },
@@ -647,6 +2196,7 @@
       "value": {
         "test_api.py": 13,
         "test_code_cleaning.py": 9,
+        "test_dpo.py": 3,
         "test_eval_set.py": 8,
         "test_evaluation.py": 9,
         "test_evaluator.py": 7,
@@ -661,26 +2211,27 @@
       "kind": "measured",
       "source": "pytest --collect-only",
       "command": "python -m pytest -o addopts= -q --collect-only",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null
     },
     "tests.def_test_functions": {
-      "value": 92,
+      "value": 95,
       "kind": "measured",
       "source": "tests/test_*.py (regex)",
       "command": "grep -c 'def test_' tests/*.py",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null,
       "notes": "Undercounts: parametrized tests expand into several cases.",
       "per_file": {
         "test_api.py": 9,
         "test_code_cleaning.py": 9,
+        "test_dpo.py": 3,
         "test_eval_set.py": 8,
         "test_evaluation.py": 9,
         "test_evaluator.py": 7,
@@ -694,13 +2245,13 @@
       }
     },
     "tests.passed": {
-      "value": 97,
+      "value": 101,
       "kind": "measured",
       "source": "pytest --junitxml",
       "command": "python -m pytest -o addopts= -q",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null,
       "notes": "Platform-dependent: the RLIMIT_AS memory test is skipped on macOS, so a Mac run is 59 passed + 1 skipped. See environment in this ledger for where this was measured."
@@ -710,21 +2261,21 @@
       "kind": "measured",
       "source": "pytest --junitxml",
       "command": "python -m pytest -o addopts= -q",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null,
       "notes": "Platform-dependent: the RLIMIT_AS memory test is skipped on macOS, so a Mac run is 59 passed + 1 skipped. See environment in this ledger for where this was measured."
     },
     "tests.skipped": {
-      "value": 1,
+      "value": 0,
       "kind": "measured",
       "source": "pytest --junitxml",
       "command": "python -m pytest -o addopts= -q",
-      "commit": "df6070e8b88978eb18092e7b957da4263ef606bd",
-      "dirty": false,
-      "date": "2026-11-01",
+      "commit": "0b342229cadb53d6710ad3e6414eb05c72fa1c66",
+      "dirty": true,
+      "date": "2026-11-03",
       "seed": null,
       "model_tag": null,
       "notes": "Platform-dependent: the RLIMIT_AS memory test is skipped on macOS, so a Mac run is 59 passed + 1 skipped. See environment in this ledger for where this was measured."
