@@ -1,0 +1,30 @@
+{
+  "experiment": "phase2_dpo",
+  "task": "ambigous_spec",
+  "sft_config": "trainer/configs/sft_v4.json",
+  "sft_n": 117,
+  "pairs": {
+    "seed": 0,
+    "per_chosen": {"near": 1, "mid": 2, "far": 1}
+  },
+  "dpo": {
+    "beta": 0.1,
+    "learning_rate": 5e-5,
+    "epochs": 2,
+    "per_device_batch_size": 1,
+    "grad_accum": 8,
+    "max_length": 2048,
+    "lr_scheduler": "linear",
+    "warmup_ratio": 0.1,
+    "logging_steps": 1,
+    "lora": {
+      "r": 16,
+      "alpha": 32,
+      "dropout": 0.0,
+      "target_modules": ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+    }
+  },
+  "mlflow": {"tracking_uri": "sqlite:///mlflow.db"},
+  "summary_dir": "experiments/phase2",
+  "runs_dir": "runs"
+}

@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "task": "ambigous_spec",
+  "seed": 0,
+  "per_chosen": {
+    "near": 1,
+    "mid": 2,
+    "far": 1
+  },
+  "tiers_max_margin": {
+    "near": 0.08,
+    "mid": 0.17,
+    "far": 1.01
+  },
+  "training_data": "data/training_runs/ambigous_spec/training_data.json",
+  "pairs_sha256": "77a2d30afbec13aa677580608843e4647c653a74bfd936f3f2fab689a117e167",
+  "diagnostics": {
+    "n_raw": 1000,
+    "n_grader_crash_excluded": 9,
+    "n_other_task": 0,
+    "n_attempts_graded": 991,
+    "n_pairs": 468,
+    "n_unique_chosen": 117,
+    "n_unique_rejected": 360,
+    "max_times_a_rejected_is_reused": 5,
+    "tier_counts": {
+      "near": 117,
+      "mid": 234,
+      "far": 117
+    },
+    "margin": {
+      "min": 0.04,
+      "mean": 0.1499,
+      "max": 0.71,
+      "n_distinct": 14
+    },
+    "chars": {
+      "chosen_mean": 2473.7,
+      "rejected_mean": 2612.0,
+      "frac_pairs_rejected_longer": 0.5919
+    },
+    "rejected_failed_test_counts": {
+      "compound_written_number": 295,
+      "large_written_million": 285,
+      "written_thousand": 283,
+      "negative_amount": 139,
+      "negative_plain": 139,
+      "invalid_raises_valueerror": 95,
+      "number_with_letters_raises": 92,
+      "gibberish_raises": 91,
+      "written_number_single": 50,
+      "decimal_only": 32,
+      "singular_dollar": 23,
+      "word_dollars": 23,
+      "empty_string_raises": 22,
+      "comma_decimal": 21,
+      "decimal_cents": 21,
+      "dollar_sign": 21,
+      "large_number": 21,
+      "comma_thousands": 8,
+      "extra_whitespace": 8,
+      "leading_zeroes": 8,
+      "tab_whitespace": 8,
+      "whitespace_after": 8,
+      "whitespace_before": 8,
+      "zero": 7
+    },
+    "frac_pairs_rejected_fails_a_written_number_test": 0.6923,
+    "checks": {
+      "all_margins_positive": true,
+      "no_identical_pairs": true,
+      "no_duplicate_pairs": true
+    }
+  }
+}
