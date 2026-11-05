@@ -54,6 +54,24 @@ def test_dpo_plan_records_and_cpu_only_dry_run():
     assert dpo_train.warmup_kwargs({"warmup_steps"}, 0.1) == {"warmup_steps": 0.1}                    # transformers 5
     with pytest.raises(RuntimeError):
         dpo_train.warmup_kwargs({"learning_rate"}, 0.1)
+
+    class _Cuda:
+        def __init__(self, avail, major):
+            self._a, self._m = avail, major
+
+        def is_available(self):
+            return self._a
+
+        def get_device_capability(self, _):
+            return (self._m, 0)
+
+    class _Torch:
+        def __init__(self, avail, major):
+            self.cuda = _Cuda(avail, major)
+
+    assert dpo_train.supports_bf16(_Torch(True, 7)) is False     # T4 (7.5): fp16 only
+    assert dpo_train.supports_bf16(_Torch(True, 8)) is True      # A100 and newer
+    assert dpo_train.supports_bf16(_Torch(False, 8)) is False
     assert dpo_train.sft_stage_config(cfg)["experiment"] == "phase2_sft"      # cannot collide with Phase 1 run ids
     recs = dpo_train.build_pair_records(
         [{"chosen": "a", "rejected": "b"}], "ambigous_spec")

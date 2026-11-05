@@ -79,6 +79,12 @@ def plan(cfg: dict, n_pairs: int) -> dict:
             "planned_optimizer_steps": spe * d["epochs"], "effective_batch": d["per_device_batch_size"] * d["grad_accum"]}
 
 
+def supports_bf16(torch) -> bool:
+    """Native bf16 needs compute capability 8.0+. torch.cuda.is_bf16_supported() also says yes for emulated bf16
+    (a T4 is 7.5), and bf16 matmuls with fp32 output then fail inside TRL's chunked log-prob kernel."""
+    return bool(torch.cuda.is_available() and torch.cuda.get_device_capability(0)[0] >= 8)
+
+
 def warmup_kwargs(config_fields: set, ratio: float) -> dict:
     """transformers 5 renamed warmup_ratio to warmup_steps (a float below 1 is read as a ratio)."""
     if "warmup_ratio" in config_fields:
@@ -174,7 +180,7 @@ def run_dpo_stage(cfg: dict, sft_cfg: dict, records: list[dict], adapter: Path, 
     set_seed(seed)
     d, lo = cfg["dpo"], cfg["dpo"]["lora"]
     base = sft_cfg["base_model"]
-    use_bf16 = torch.cuda.is_available() and torch.cuda.is_bf16_supported()
+    use_bf16 = supports_bf16(torch)
     dtype = torch.bfloat16 if use_bf16 else torch.float16
     tokenizer = AutoTokenizer.from_pretrained(base)
     if tokenizer.eos_token != sft_train.REQUIRED_EOS:
