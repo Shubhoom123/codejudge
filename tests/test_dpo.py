@@ -50,6 +50,10 @@ def test_real_pairs_are_not_degenerate_and_match_the_committed_meta():
 def test_dpo_plan_records_and_cpu_only_dry_run():
     cfg = dpo_train.load_config(ROOT / "trainer" / "configs" / "dpo_v4.json")
     assert dpo_train.plan(cfg, 468)["planned_optimizer_steps"] == 118
+    assert dpo_train.warmup_kwargs({"warmup_ratio", "warmup_steps"}, 0.1) == {"warmup_ratio": 0.1}   # old transformers
+    assert dpo_train.warmup_kwargs({"warmup_steps"}, 0.1) == {"warmup_steps": 0.1}                    # transformers 5
+    with pytest.raises(RuntimeError):
+        dpo_train.warmup_kwargs({"learning_rate"}, 0.1)
     assert dpo_train.sft_stage_config(cfg)["experiment"] == "phase2_sft"      # cannot collide with Phase 1 run ids
     recs = dpo_train.build_pair_records(
         [{"chosen": "a", "rejected": "b"}], "ambigous_spec")

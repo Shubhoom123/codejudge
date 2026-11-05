@@ -79,6 +79,15 @@ def plan(cfg: dict, n_pairs: int) -> dict:
             "planned_optimizer_steps": spe * d["epochs"], "effective_batch": d["per_device_batch_size"] * d["grad_accum"]}
 
 
+def warmup_kwargs(config_fields: set, ratio: float) -> dict:
+    """transformers 5 renamed warmup_ratio to warmup_steps (a float below 1 is read as a ratio)."""
+    if "warmup_ratio" in config_fields:
+        return {"warmup_ratio": ratio}
+    if "warmup_steps" in config_fields:
+        return {"warmup_steps": ratio}
+    raise RuntimeError("this transformers has neither warmup_ratio nor warmup_steps")
+
+
 def build_pair_records(pairs: list[dict], task: str) -> list[dict]:
     """prompt/chosen/rejected strings; the prompt is the evaluators' own prompt function."""
     prompt = cj_config.format_chatml(cj_config.build_eval_prompt(task))
@@ -190,8 +199,9 @@ def run_dpo_stage(cfg: dict, sft_cfg: dict, records: list[dict], adapter: Path, 
         output_dir=str(run_dir / "trainer"), beta=d["beta"], learning_rate=d["learning_rate"],
         num_train_epochs=d["epochs"], per_device_train_batch_size=d["per_device_batch_size"],
         gradient_accumulation_steps=d["grad_accum"], lr_scheduler_type=d["lr_scheduler"],
-        warmup_ratio=d["warmup_ratio"], logging_steps=d["logging_steps"], seed=seed, data_seed=seed,
-        fp16=not use_bf16, bf16=use_bf16, save_strategy="no", report_to="none")
+        logging_steps=d["logging_steps"], seed=seed, data_seed=seed,
+        fp16=not use_bf16, bf16=use_bf16, save_strategy="no", report_to="none",
+        **warmup_kwargs(fields, d["warmup_ratio"]))
     if "max_length" in fields:
         kwargs["max_length"] = d["max_length"]
     if "max_prompt_length" in fields:
